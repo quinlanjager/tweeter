@@ -15,6 +15,7 @@ html {
  */
 
 body {
+	font-family: 'Roboto condensed', sans-serif;
   margin: 0;
   color: #244751;
   background-color: #eee;
@@ -23,3 +24,15 @@ body {
 /*
  * Additional CSS can be defined below or in other CSS files, as per instructions
  */
+
+.container {
+	position: relative;
+	padding-top:140px;
+	width: 450px;
+	background-color: white;
+	margin: 0 auto;
+}
+/*To account for margin collapse thanks to p having a default margin top of 16px*/
+.container p:first-child{
+	margin-top: 0;
+}
