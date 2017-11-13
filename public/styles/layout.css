@@ -27,12 +27,8 @@ body {
 
 .container {
 	position: relative;
-	padding-top:140px;
+	padding: 140px 2em;
 	width: 450px;
 	background-color: white;
 	margin: 0 auto;
-}
-/*To account for margin collapse thanks to p having a default margin top of 16px*/
-.container p:first-child{
-	margin-top: 0;
 }
