@@ -15,20 +15,24 @@ html {
  */
 
 body {
+  background-color: #eee;
+  color: #244751;
 	font-family: 'Roboto condensed', sans-serif;
   margin: 0;
-  color: #244751;
-  background-color: #eee;
 }
 
 /*
  * Additional CSS can be defined below or in other CSS files, as per instructions
  */
 
+.red-text{
+	color:red;
+}
+
 .container {
-	position: relative;
-	padding: 140px 2em;
-	width: 450px;
 	background-color: white;
+	padding: 140px 2em;
+	position: relative;
 	margin: 0 auto;
+	width: 450px;
 }

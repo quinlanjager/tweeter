@@ -24,9 +24,6 @@ module.exports = function(DataHelpers) {
     }
 
     const user = req.body.user ? req.body.user : userHelper.generateRandomUser();
-    /**
-     * @todo make this an object prototype that takes this content. Then use the `new` keyword.
-     */
     const tweet = {
       user: user,
       content: {
