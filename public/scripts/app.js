@@ -45,16 +45,15 @@ function checkIfNewTweet(tweet){
  * Loads up tweets via an AJAX call.
  * 
  */
-
 function loadTweets(){
   $.ajax({
     url: '/tweets',
     method: 'GET',
   }).done(function(data){
-    filteredData = data.filter(checkIfNewTweet);
-    // if data is old, only render new info.
+    var newData = data.filter(checkIfNewTweet);
+    // only render new tweets if this isn't the first time running are new tweets.
     if(filteredData.length){
-      data = filteredData;
+      data = newData;
     }
     renderTweets(data);
   })
@@ -84,6 +83,8 @@ function formSubmissionHandler(event){
   event.preventDefault();
   var $tweetComposer = $('.new-tweet form textarea');
   var tweet = $tweetComposer.val();
+
+  // form validation
   if(tweet.length === 0){
     generateTweetErrorMessage('Please input text before submitting.');
     return;
@@ -92,17 +93,18 @@ function formSubmissionHandler(event){
     generateTweetErrorMessage('Sorry, your tweet is too long.');
     return;
   }
+  // ajax call
   $.ajax({
     url: '/tweets',
     method: 'POST',
     data: $tweetComposer.serialize(),
     beforeSend: function(){
-      $('.new-tweet form label').remove();
+      $('.new-tweet form label.red-text').remove(); // if there is a warning label, remove it
     }
   }).done(function(data){
-    $('.new-tweet form textarea').val('');
-    loadTweets();
-  });
+      $('.new-tweet form textarea').val(''); // clear tweet composer (reset it)
+      loadTweets();
+    });
 }
 
 
