@@ -82,6 +82,7 @@ $(document).ready(function(){
   });
 
   $('#nav-bar .nav-buttons').on('click', 'button', function(){
-    $('.new-tweet').slideToggle();
+    $('.new-tweet').slideToggle()
+    $('.new-tweet form textarea').focus();
    })
 });
