@@ -80,4 +80,8 @@ $(document).ready(function(){
       loadTweets();
     });
   });
+
+  $('#nav-bar .nav-buttons').on('click', 'button', function(){
+    $('.new-tweet').slideToggle();
+   })
 });
