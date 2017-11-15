@@ -25,14 +25,27 @@ body {
  * Additional CSS can be defined below or in other CSS files, as per instructions
  */
 
-.red-text{
-	color:red;
-}
-
 .container {
 	background-color: white;
 	padding: 140px 2em;
 	position: relative;
 	margin: 0 auto;
 	width: 450px;
+}
+
+/*Effects*/
+@keyframes fadeIn{
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+.red-text {
+	color:red;
+}
+.fade-in {
+	opacity: 0;
+	animation: 0.25s ease-out forwards fadeIn;
 }
