@@ -45,12 +45,14 @@ article.tweet header img{
 article.tweet header h3{
 	margin-top: 0;
 	position: relative;
-	width: 70%;
+	width: 60%;
 }
 article.tweet header p{
 	color: #244751;
+	width:30%;
 	margin-top: 0;
 	position: relative;
+	text-align: right;
 }
 
 /**

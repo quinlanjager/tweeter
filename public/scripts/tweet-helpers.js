@@ -30,6 +30,8 @@ function makeFooter(created_at){
 	var timeStamp = Math.round((currentDate - created_at)/86400000);
 	if(timeStamp > 14){
 		timeStamp = created_at.toDateString();
+	} else if (timeStamp === 0){
+		timeStamp = created_at.getHours() + ':' + created_at.getMinutes() + ' today';
 	} else {
 		timeStamp = timeStamp + ' days ago.'
 	}

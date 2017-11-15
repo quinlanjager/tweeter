@@ -7,6 +7,7 @@ function countCharacters(event){
 	var textArea = $(this);
 	var counter = textArea.nextAll('.counter');
 	var textAreaLength = textArea.val().length;
+	console.log(textAreaLength);
 	var charsLeft = 140 - textAreaLength;
 		
 	counter.html(charsLeft);
@@ -21,5 +22,7 @@ function countCharacters(event){
 
 $(document).ready(function(){
 	var composer = $('#composer');
+	//Added count characters to both to track more accurately.
 	composer.keydown(countCharacters);
+	composer.keyup(countCharacters);
 });
