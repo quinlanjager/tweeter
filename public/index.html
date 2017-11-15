@@ -22,6 +22,7 @@
     <script type="text/javascript" src="/vendor/jquery-2.2.3.min.js"></script>
 
     <!-- App JS -->
+    <script type="text/javascript" src="/scripts/tweet-helpers.js"></script>
     <script type="text/javascript" src="/scripts/app.js"></script>
     <script type="text/javascript" src="/scripts/composer-char-counter.js"></script>
   </head>
@@ -46,7 +47,24 @@
       </section>
       <!-- Tweets -->
       <section id="tweets-container">
-
+        <article class="tweet">
+          <header>
+            <img alt="Bill Fields" src="/images/default-icon.png">
+            <h3>Bill Fields</h3>
+            <p>@mrfields</p>
+          </header>
+          <main>
+            <p> A little tweet</p>
+          </main>
+          <footer>
+            <p>10 days ago</p>
+            <section class="icons">
+              <i class="fa fa-flag" aria-hidden="true"></i>
+              <i class="fa fa-retweet" aria-hidden="true"></i>
+              <i class="fa fa-heart" aria-hidden="true"></i>
+            </section>
+          </footer>
+        </article>
       </section>
     </main>
 
