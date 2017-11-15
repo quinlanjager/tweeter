@@ -23,8 +23,8 @@
 
     <!-- App JS -->
     <script type="text/javascript" src="/scripts/tweet-helpers.js"></script>
-    <script type="text/javascript" src="/scripts/app.js"></script>
     <script type="text/javascript" src="/scripts/composer-char-counter.js"></script>
+    <script type="text/javascript" src="/scripts/app.js"></script>
   </head>
 
   <body>
@@ -42,6 +42,7 @@
 
     <!-- Page-specific (main) content here -->
     <main class="container">
+      <!-- Tweet composer -->
       <section class="new-tweet">
       <h2>Compose Tweet</h2>
         <form method="post" action="/tweets">
@@ -50,9 +51,11 @@
           <span class="counter">140</span>
         </form>
       </section>
+
       <!-- Tweets -->
       <section id="tweets-container">
       </section>
+
     </main>
 
   </body>

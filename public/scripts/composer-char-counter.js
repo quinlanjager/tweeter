@@ -9,7 +9,7 @@ function countCharacters(event){
 	var textAreaLength = textArea.val().length;
 	var charsLeft = 140 - textAreaLength;
 		
-	counter.html(charsLeft);
+	counter.text(charsLeft);
 
 	// check if the user has exceeded character limit
 	if(charsLeft < 1){
@@ -19,9 +19,13 @@ function countCharacters(event){
 	}
 }
 
-$(document).ready(function(){
-	var composer = $('#composer');
-	//Added count characters to both to track more accurately.
-	composer.keydown(countCharacters);
-	composer.keyup(countCharacters);
-});
+/**
+ * Listens for key up and down. Calls callback when either one occurs
+ * @param  {Function} callback A valid function to handle the keyup and keydown events
+ * 
+ */
+function keyupanddown(element, callback){
+	element.keydown(callback);
+  element.keyup(callback);
+}
+

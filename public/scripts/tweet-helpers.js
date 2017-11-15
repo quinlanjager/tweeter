@@ -1,5 +1,5 @@
 /**
- * Built the tweet header
+ * Build the tweet header
  * @param  {object} user [A object containing tweeter user info]
  * @return {object}      [Returns a jQuery object containing a completed header.]
  * 
