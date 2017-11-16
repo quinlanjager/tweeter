@@ -1,7 +1,7 @@
 /**
  * Count the characters of the tweet composer
  * @param  {object} event The event object from the listener that triggered the calculation
- * @return {undefined}     This function is called for it's side effects
+ * 
  */
 function countCharacters(event){
 	var textArea = $(this);

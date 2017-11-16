@@ -1,35 +1,18 @@
-/*
- * Client-side JS logic goes here
- * jQuery is already loaded
- * Reminder: Use (and do all your DOM work in) jQuery's document ready function
- */
-
-var timeLastChecked = Date.now();
+var timeOfLastLoad = Date.now(); 
 
 /**
- * Create a new tweet jQuery element
- * @param  {object} data  An individual tweet object from an array of tweets.
- * @return {object}       Returns a jQuery element object representing a tweet.
- *  
- */
-function generateTweetElement(data){
-  var $tweet = $('<article>').addClass('tweet');
-  var $main = $('<main>').append($('<p>').text(data.content.text)); 
-  return $tweet.append(makeHeader(data.user)) // from ./tweet-helpers
-               .append($main)
-               .append(makeFooter(data.created_at)); // from ./tweet-helpers
-}
-
-/**
- * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
- * @param  {[]} tweets [description]
- * @return {[type]}        [description]
+ * Generate an error message label to be appended to the tweet composer form
+ * @param  {string} message The message you'd like to communicate
  * 
  */
-function renderTweets(tweets){
-  tweets.forEach(function(tweet){
-    $('#tweets-container').prepend(generateTweetElement(tweet)); // prepend to show 'newest first'
-  });
+function generateTweetErrorMessage(message){
+  // if label aready exists, just replace the text
+  var $errorLabel = $('.new-tweet form label');
+  if($errorLabel.text().length){
+    $errorLabel.text(message);
+  } else{
+    $('<label>').text(message).addClass('red-text').appendTo($('.new-tweet form')); 
+  }
 }
 
 /**
@@ -38,7 +21,7 @@ function renderTweets(tweets){
  * @return {boolean}        A coerced truthy of falsey value depending on when the tweet was created
  */
 function checkIfNewTweet(tweet){
-  return tweet.created_at > timeLastChecked;
+  return tweet.created_at > timeOfLastLoad;
 }
 
 /**
@@ -56,23 +39,19 @@ function loadTweets(){
       data = newData;
     }
     renderTweets(data);
-    timeLastChecked = Date.now();
+    timeOfLastLoad = Date.now();
   })
 }
 
 /**
- * Generate an error message label to be appended to the tweet composer form
- * @param  {string} message The message you'd like to communicate
+ * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
+ * @param  {array} tweets   An array of tweet objects
  * 
  */
-function generateTweetErrorMessage(message){
-  // if label aready exists, just replace the text
-  var $errorLabel = $('.new-tweet form label');
-  if($errorLabel.text().length){
-    $errorLabel.text(message);
-  } else{
-    $('<label>').text(message).addClass('red-text').appendTo($('.new-tweet form')); 
-  }
+function renderTweets(tweets){
+  tweets.forEach(function(tweet){
+    $('#tweets-container').prepend(compileTweetElement(tweet)); // prepend to show 'newest first', from tweet-creation-helpers
+  });
 }
 
 /**
@@ -108,20 +87,23 @@ function formSubmissionHandler(event){
     });
 }
 
-
 $(document).ready(function(){
+  var $composerTextArea = $('#composer');
+  var $form = $('.new-tweet form');
+  var $composerButton = $('#nav-bar .nav-buttons button');
   loadTweets();
   
   // handles form submission
-  $('.new-tweet form').submit(formSubmissionHandler);
+  $form.submit(formSubmissionHandler);
 
   // Toggle form field to slide down then focus on the composer
-  $('#nav-bar .nav-buttons').on('click', 'button', function(){
+  $composerButton.click(function(){
     $('.new-tweet').slideToggle()
     $('.new-tweet form textarea').focus();
    })
 
+  $('#tweets-container ')
+
   // character counting
-  var $composer = $('#composer');
-  keyupanddown($composer, countCharacters); // from ./composer-char-counter
+  keyupanddown($composerTextArea, countCharacters); // from ./composer-char-counter
 });
