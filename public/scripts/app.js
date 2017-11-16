@@ -52,7 +52,7 @@ function loadTweets(){
   }).done(function(data){
     var newData = data.filter(checkIfNewTweet);
     // only render new tweets if this isn't the first time running are new tweets.
-    if(filteredData.length){
+    if(newData.length){
       data = newData;
     }
     renderTweets(data);
