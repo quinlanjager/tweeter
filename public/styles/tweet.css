@@ -95,3 +95,6 @@ article.tweet:hover footer .icons{
 article.tweet footer .icons i{
 	margin: 0 3px;
 }
+article.tweet footer .fa-heart{
+	cursor: pointer;
+}

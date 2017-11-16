@@ -38,6 +38,24 @@ function makeTimeStamp(timeTweetCreated){
 }
 
 /**
+ * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
+ * @param  {object} tweetData  The tweet data object
+ * @param  {object} $icon 		 The jQuery object representing the icon we're changing
+ * 
+ */
+function iconClickHandler(tweetData, $icon){
+	return function(event){
+		event.stopPropagation(); //isolate the click event
+		$.ajax({
+			url : '/tweets/' + tweetData._id,
+			method : 'PUT',
+		}).done(function(tweetData){
+			$icon.closest('footer').find('p span').text(' Likes: ' + tweetData.likes);
+		});
+	}		
+}
+
+/**
  * Build the tweet footer
  * @param  {number} timeTweetCreated [The date in milliseconds the tweet was created]
  * @return {object}      			 [Returns a jQuery object containing a completed footer.]
@@ -47,15 +65,21 @@ function makeFooter(tweetData){
 	// build section to hold icons
 	var icons = ['fa-flag', 'fa-retweet', 'fa-heart']; // icon class names from fontAwesome 
 	var $iconsSection = $('<section>').addClass('icons');
+	var likes = tweetData.likes ? tweetData.likes : 0;
+	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at));
+			$details.append($('<span>').text(' Likes: ' + likes));
 	icons.forEach(function(icon){
 		var iAttr = {
 			class : 'fa ' + icon,
 			'aria-hidden' : 'true'
 		}
-		$iconsSection.append($('<i>').attr(iAttr));
+		var $iconElt = $('<i>').attr(iAttr);
+		if(icon === 'fa-heart'){
+			$iconElt.click(iconClickHandler(tweetData, $iconElt))
+		}
+		$iconsSection.append($iconElt);
 	});
-
-	return $('<footer>').append($('<p>').text(makeTimeStamp(tweetData.created_at)))
+	return $('<footer>').append($details)
 											.append($iconsSection);
 }
 
