@@ -56,6 +56,7 @@ function loadTweets(){
       data = newData;
     }
     renderTweets(data);
+    timeLastChecked = Date.now();
   })
 }
 
