@@ -1,4 +1,16 @@
 /**
+ * Tweet creation functions.
+ */
+
+function addPadding(num){
+	var str = num.toString();
+	while(str.length !== 2){
+		str = '0' + str;
+	}		
+	return str;
+}
+
+/**
  * Build the tweet header
  * @param  {object} user [A object containing tweeter user info]
  * @return {object}      [Returns a jQuery object containing a completed header.]
@@ -30,7 +42,7 @@ function makeTimeStamp(timeTweetCreated){
 	if(timeStamp > 14){
 		timeStamp = timeTweetCreated.toDateString();
 	} else if (timeStamp === 0){
-		timeStamp = timeTweetCreated.getHours() + ':' + timeTweetCreated.getMinutes() + ' today';
+		timeStamp = addPadding(timeTweetCreated.getHours()) + ':' + addPadding(timeTweetCreated.getMinutes()) + ' today';
 	} else {
 		timeStamp = timeStamp + ' days ago.'
 	}
@@ -40,7 +52,7 @@ function makeTimeStamp(timeTweetCreated){
 /**
  * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
  * @param  {object} tweetData  The tweet data object
- * @param  {object} $icon 		 The jQuery object representing the icon we're changing
+ * @param  {object} $icon 		 The jQuery object representing the icon we're changing.
  * 
  */
 function iconClickHandler(tweetData, $icon){
@@ -62,23 +74,27 @@ function iconClickHandler(tweetData, $icon){
  * 
  */
 function makeFooter(tweetData){
-	// build section to hold icons
 	var icons = ['fa-flag', 'fa-retweet', 'fa-heart']; // icon class names from fontAwesome 
 	var $iconsSection = $('<section>').addClass('icons');
 	var likes = tweetData.likes ? tweetData.likes : 0;
+	// Meta information:
 	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at));
 			$details.append($('<span>').text(' Likes: ' + likes));
+
+	// Append icons to the iconsSection
 	icons.forEach(function(icon){
-		var iAttr = {
+		var iconAttributes = {
 			class : 'fa ' + icon,
 			'aria-hidden' : 'true'
 		}
-		var $iconElt = $('<i>').attr(iAttr);
+		var $iconElt = $('<i>').attr(iconAttributes);
+		// Add click handler to the heart icon
 		if(icon === 'fa-heart'){
 			$iconElt.click(iconClickHandler(tweetData, $iconElt))
 		}
 		$iconsSection.append($iconElt);
 	});
+
 	return $('<footer>').append($details)
 											.append($iconsSection);
 }

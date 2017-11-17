@@ -22,3 +22,8 @@
 	font-style: italic;
 	line-height: 1.8em;
 }
+
+#composer{
+	max-width: 360px;
+	min-width: 360px;
+}
