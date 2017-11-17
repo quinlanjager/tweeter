@@ -1,0 +1,172 @@
+/*
+ * http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+ * https://css-tricks.com/international-box-sizing-awareness-day/
+ * Do not modify these two selectors, please
+ */
+html {
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  box-sizing: inherit; }
+
+/*
+ * Global layout stuff
+ */
+body {
+  background-color: #eee;
+  color: #687C83;
+  font-family: 'Roboto condensed', sans-serif;
+  margin: 0; }
+
+/*
+ * Additional CSS can be defined below or in other CSS files, as per instructions
+ */
+.container {
+  background-color: white;
+  padding: 140px 2em;
+  position: relative;
+  margin: 0 auto;
+  width: 450px; }
+
+/*Effects*/
+@keyframes fadeIn {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+.red-text {
+  color: red; }
+
+#nav-bar {
+  background-color: #00a087;
+  color: #e8fdff;
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  padding: 0 2em;
+  height: 80px;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 999; }
+  #nav-bar .logo-header .logo {
+    float: left;
+    height: 80px;
+    width: 80px; }
+  #nav-bar .logo-header .header {
+    float: left;
+    font-size: 2em;
+    line-height: 2.5;
+    margin-left: 10px; }
+  #nav-bar .nav-buttons button {
+    position: relative;
+    top: 25px; }
+
+.new-tweet {
+  background-color: #EEE;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: .75em;
+  display: none; }
+  .new-tweet h2 {
+    border-bottom: 1px solid #666;
+    margin-top: 0;
+    padding-bottom: 1px; }
+  .new-tweet form textarea {
+    padding: 5px;
+    width: 100%; }
+  .new-tweet form .counter {
+    float: right;
+    font-style: italic;
+    line-height: 1.8em; }
+
+/**
+ * Prevents the text area from being dragged too far out
+ */
+#composer {
+  max-width: 360px; }
+
+/* Adding padding to everything*/
+/**
+ * Document purpose: style individual tweet 'cards'.;
+ */
+article.tweet {
+  animation: 0.25s ease-out forwards fadeIn;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 16px;
+  opacity: 0;
+  overflow: hidden;
+  /** 
+ 	 * Tweet Header Styles
+   * 
+   */
+  /**
+ * Tweet Content Styles
+ * 
+ */
+  /**
+ * Tweet Footer Styles
+ * 
+ */ }
+  article.tweet:hover {
+    border: 1px solid #666; }
+  article.tweet header {
+    padding: .75em;
+    color: #687C83;
+    background-color: #F2F4F1;
+    border: 0px;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    padding: .75em;
+    position: relative; }
+    article.tweet header img {
+      padding: 2px;
+      border: 1px solid lightgrey;
+      border-radius: 6px;
+      display: inline;
+      height: 48px;
+      margin-right: 10px;
+      width: 48px; }
+    article.tweet header h3 {
+      margin-top: 0;
+      position: relative;
+      width: 60%; }
+    article.tweet header p {
+      color: #244751;
+      width: 30%;
+      margin-top: 0;
+      position: relative;
+      text-align: right; }
+  article.tweet:hover header {
+    color: #244751;
+    background-color: #EEEEEE; }
+  article.tweet main {
+    padding: .75em;
+    padding-top: 1em;
+    padding-bottom: 1em; }
+    article.tweet main p {
+      word-wrap: break-word; }
+  article.tweet footer {
+    padding: .75em;
+    display: flex;
+    border-top: 1px solid lightgrey;
+    font-size: .75em; }
+    article.tweet footer p {
+      margin-bottom: 0px;
+      margin-top: 0px;
+      width: 50%; }
+    article.tweet footer .icons {
+      color: #00a087;
+      display: none;
+      text-align: right;
+      width: 50%; }
+      article.tweet footer .icons i {
+        margin: 0 3px; }
+    article.tweet footer .fa-heart {
+      cursor: pointer; }
+      article.tweet footer .fa-heart:hover {
+        color: red; }
+  article.tweet:hover footer .icons {
+    display: inline; }

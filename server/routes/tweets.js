@@ -41,8 +41,9 @@ module.exports = function(DataHelpers) {
     });
   });
 
-  tweetsRoutes.put("/:id", function(req, res) {
-    DataHelpers.addLikeTo(req.params.id, (result) => {
+  tweetsRoutes.put("/:tweetID/:task", function(req, res) {
+    const {tweetID, task} = req.params;
+    DataHelpers.addLikeTo(tweetID, task, (result) => {
       res.json(result);
     })
   })

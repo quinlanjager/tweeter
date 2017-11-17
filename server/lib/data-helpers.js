@@ -27,9 +27,10 @@ module.exports = function makeDataHelpers(db) {
 
     // add a like
     
-    addLikeTo: function(id, callback){
+    addLikeTo: function(id, task, callback){
       let tweetId = new ObjectID(id);
-      db.collection('tweets').updateOne({_id: tweetId}, {$inc: {likes : 1}}, (err, tweet) => {
+      let increment = task === 'like' ? 1 : -1; 
+      db.collection('tweets').updateOne({_id: tweetId}, {$inc: {likes : increment}}, (err, tweet) => {
         if(err){
           console.log(err);
           return;

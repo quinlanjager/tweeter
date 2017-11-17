@@ -1,0 +1,31 @@
+.new-tweet{
+	background-color: #EEE;
+	border: 1px solid $base-grey;
+	border-radius: 6px;
+	padding: .75em;
+	display: none;
+	
+	h2 {
+		border-bottom: 1px solid $base-grey-dark;
+		margin-top: 0;
+		padding-bottom: 1px;
+	}
+	form {
+		textarea {
+			padding: 5px;
+			width:100%;
+		}
+		.counter {
+			float: right;
+			font-style: italic;
+			line-height: 1.8em;
+		}
+	}
+}
+
+/**
+ * Prevents the text area from being dragged too far out
+ */
+#composer{
+	max-width: 360px;
+}

@@ -1,0 +1,32 @@
+#nav-bar{
+	background-color: $base-primary-colour;
+	color:#e8fdff;
+	display: flex;
+	justify-content: space-between;
+	position: fixed;
+	padding: 0 2em;
+	height:80px;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 999;
+	
+	.logo-header{
+		.logo{
+			float: left;
+			height: 80px;
+			width: 80px;
+		}
+		.header{
+			float: left;
+			font-size: 2em;
+			line-height: 2.5;
+			margin-left: 10px;
+		}
+	}
+	
+	.nav-buttons button{
+		position: relative;
+		top:25px;
+	}
+}

@@ -225,11 +225,25 @@ function iconClickHandler(tweetData, $icon){
 	return function(event){
 		//isolate the click event
 		event.stopPropagation();
+
+		var $likes = $icon.closest('footer').find('p span');
+		// if the tweet is already liked
+		if($icon.data('liked') === true){
+			$likes.text(tweetData.likes);
+
+			$.ajax({
+				url: '/tweets/' + tweetData._id + '/unlike',
+				method: 'PUT'
+			});
+			$icon.removeData('liked');
+			return;
+		}
+
+		$icon.data('liked', true);
+		$likes.text(Number(tweetData.likes) + 1);
 		$.ajax({
-			url: '/tweets/' + tweetData._id,
+			url: '/tweets/' + tweetData._id + '/like',
 			method: 'PUT'
-		}).done(function(tweetData){
-			$icon.closest('footer').find('p span').text(' Likes: ' + tweetData.likes);
 		});
 	};
 }
@@ -246,8 +260,8 @@ function makeFooter(tweetData){
 	var $iconsSection = $('<section>').addClass('icons');
 	var likes = tweetData.likes ? tweetData.likes : 0;
 	// Meta information:
-	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at));
-			$details.append($('<span>').text(' Likes: ' + likes));
+	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at) + ' Likes: ');
+			$details.append($('<span>').text(likes));
 
 	// Append icons to the iconsSection
 	icons.forEach(function(icon){

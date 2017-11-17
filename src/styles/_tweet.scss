@@ -1,0 +1,112 @@
+/* Adding padding to everything*/
+@mixin basePadding {
+	padding: .75em;
+}
+
+/**
+ * Document purpose: style individual tweet 'cards'.;
+ */
+article.tweet{
+	animation: 0.25s ease-out forwards fadeIn;
+	border: 1px solid $base-grey;
+	border-radius: 6px;
+	margin-top: 16px;
+	opacity: 0;
+	overflow: hidden;
+	
+	&:hover{
+		border: 1px solid $base-grey-dark;
+	}
+
+	/** 
+ 	 * Tweet Header Styles
+   * 
+   */
+	header{
+		@include basePadding;
+		color: $base-font-colour;
+		background-color:#F2F4F1;
+		border: 0px;
+		border-radius: 6px 6px 0 0;
+		display: flex;
+		padding: .75em;
+		position: relative;
+		
+		img{
+			padding:2px;
+			border: 1px solid lightgrey;
+			border-radius: 6px;
+			display: inline;
+			height:48px;
+			margin-right: 10px;
+			width:48px;
+		} 
+		h3{
+			margin-top: 0;
+			position: relative;
+			width: 60%;
+		}
+		p{
+			color: #244751;
+			width:30%;
+			margin-top: 0;
+			position: relative;
+			text-align: right;
+		}
+	}
+	&:hover header{
+		color: #244751;
+		background-color:#EEEEEE;
+	}
+
+/**
+ * Tweet Content Styles
+ * 
+ */
+	main{
+		@include basePadding;
+		padding-top: 1em;
+		padding-bottom:1em;
+
+		p{
+			word-wrap: break-word;
+		}
+	}
+
+/**
+ * Tweet Footer Styles
+ * 
+ */
+	footer{
+		@include basePadding;
+		display: flex;
+		border-top:1px solid lightgrey;
+		font-size: .75em;
+		
+		p{
+			margin-bottom: 0px;
+			margin-top: 0px;
+			width: 50%;
+		}
+		.icons {
+			color:$base-primary-colour;
+			display: none;
+			text-align: right;
+			width: 50%;
+			i{
+				margin: 0 3px;
+			}
+		}
+		.fa-heart{
+			cursor: pointer;
+
+			&:hover{
+				color:red;
+			}
+		}
+	}
+
+	&:hover footer .icons{
+		display: inline;
+	}
+}

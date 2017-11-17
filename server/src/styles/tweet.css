@@ -1,0 +1,100 @@
+/**
+ * Document purpose: style individual tweet 'cards'.;
+ */
+article.tweet{
+	animation: 0.25s ease-out forwards fadeIn;
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+	margin-top: 16px;
+	opacity: 0;
+	overflow: hidden;
+}
+article.tweet:hover{
+	border: 1px solid #666666;
+}
+/* Adding padding*/
+article.tweet > header, article.tweet > main, article.tweet > footer {
+	padding: .75em;
+}
+
+/** 
+ * Tweet Header Styles
+ * 
+ */
+article.tweet header{
+	color: #687C83;
+	background-color:#F2F4F1;
+	border: 0px;
+	border-radius: 6px 6px 0 0;
+	display: flex;
+	padding: .75em;
+	position: relative;
+}
+article.tweet:hover header{
+	color: #244751;
+	background-color:#EEEEEE;
+}
+article.tweet header img{
+	background-color:lightgreen;
+	padding:2px;
+	border: 1px solid lightgrey;
+	border-radius: 6px;
+	display: inline;
+	height:48px;
+	margin-right: 10px;
+	width:48px;
+} 
+article.tweet header h3{
+	margin-top: 0;
+	position: relative;
+	width: 60%;
+}
+article.tweet header p{
+	color: #244751;
+	width:30%;
+	margin-top: 0;
+	position: relative;
+	text-align: right;
+}
+
+/**
+ * Tweet Content Styles
+ * 
+ */
+article.tweet main{
+	padding-top: 1em;
+	padding-bottom:1em;
+}
+article.tweet main p{
+	word-wrap: break-word;
+}
+
+/**
+ * Tweet Footer Styles
+ * 
+ */
+article.tweet footer{
+	display: flex;
+	border-top:1px solid lightgrey;
+	font-size: .75em;
+}
+article.tweet footer p{
+	margin-bottom: 0px;
+	margin-top: 0px;
+	width: 50%;
+}
+article.tweet footer .icons {
+	color:#00a087;
+	display: none;
+	text-align: right;
+	width: 50%;
+}
+article.tweet:hover footer .icons{
+	display: inline;
+}
+article.tweet footer .icons i{
+	margin: 0 3px;
+}
+article.tweet footer .fa-heart{
+	cursor: pointer;
+}
