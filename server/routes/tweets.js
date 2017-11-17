@@ -47,7 +47,6 @@ module.exports = function(DataHelpers) {
 
   tweetsRoutes.put("/:tweetID", function(req, res) {
     const {tweetID} = req.params;
-    console.log(req.cookies);
     const {userID} = req.cookies.userID;
     DataHelpers.addLikeTo(tweetID, userID, (result) => {
       res.json(result);

@@ -75,13 +75,11 @@ function iconClickHandler(tweetData, $icon){
 		}
 
 		$icon.data('liked', true);
+		console.log(document.querySelector('.fa-heart').getAttribute('data-liked'));
 		$likes.text(Number(tweetData.likes.length) + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
-			beforesend: function(){
-
-			}
 		});
 	};
 }

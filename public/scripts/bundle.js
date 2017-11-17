@@ -225,22 +225,22 @@ function iconClickHandler(tweetData, $icon){
 	return function(event){
 		//isolate the click event
 		event.stopPropagation();
+		$icon.toggleClass('red-text');
 
 		var $likes = $icon.closest('footer').find('p span');
 		// if the tweet is already liked
 		if($icon.data('liked') === true){
 			$likes.text(tweetData.likes.length);
-
 			$.ajax({
 				url: '/tweets/' + tweetData._id,
 				method: 'PUT'
 			});
 			$icon.removeData('liked');
-			$icon.toggleClass('red-text');
 			return;
 		}
-		$icon.toggleClass('red-text');
+
 		$icon.data('liked', true);
+		console.log(document.querySelector('.fa-heart').getAttribute('data-liked'));
 		$likes.text(Number(tweetData.likes.length) + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
@@ -260,7 +260,6 @@ function makeFooter(tweetData){
 	var icons = ['fa-flag', 'fa-retweet', 'fa-heart'];
 	var $iconsSection = $('<section>').addClass('icons');
 	var likes = tweetData.likes.length;
-	console.log(tweetData.likes.length);
 	// Meta information:
 	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at) + ' Likes: ');
 			$details.append($('<span>').text(likes));
