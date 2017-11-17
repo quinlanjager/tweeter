@@ -26,7 +26,6 @@ module.exports = function makeDataHelpers(db) {
     },
 
     // add a like
-    
     addLikeTo: function(id, userID, callback){
       let tweetId = new ObjectID(id);
       db.collection('tweets').updateOne({_id: tweetId}, {$addToSet: {likes : userID}}, (err, tweet) => {

@@ -159,14 +159,17 @@ article.tweet {
       width: 50%; }
     article.tweet footer .icons {
       color: #00a087;
-      display: none;
       text-align: right;
       width: 50%; }
       article.tweet footer .icons i {
         margin: 0 3px; }
-    article.tweet footer .fa-heart {
-      cursor: pointer; }
-      article.tweet footer .fa-heart:hover {
-        color: red; }
-  article.tweet:hover footer .icons {
-    display: inline; }
+      article.tweet footer .icons .fa {
+        display: none; }
+      article.tweet footer .icons:hover .fa {
+        display: inline; }
+      article.tweet footer .icons .fa-heart {
+        cursor: pointer; }
+        article.tweet footer .icons .fa-heart:hover {
+          color: red; }
+        article.tweet footer .icons .fa-heart.red-text {
+          display: inline; }

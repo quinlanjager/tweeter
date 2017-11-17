@@ -74,12 +74,16 @@ function iconClickHandler(tweetData, $icon){
 			$icon.toggleClass('red-text');
 			return;
 		}
+
 		$icon.toggleClass('red-text');
 		$icon.data('liked', true);
 		$likes.text(Number(tweetData.likes.length) + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
+			beforesend: function(){
+
+			}
 		});
 	};
 }
@@ -95,7 +99,6 @@ function makeFooter(tweetData){
 	var icons = ['fa-flag', 'fa-retweet', 'fa-heart'];
 	var $iconsSection = $('<section>').addClass('icons');
 	var likes = tweetData.likes.length;
-	console.log(tweetData.likes.length);
 	// Meta information:
 	var $details = $('<p>').html(makeTimeStamp(tweetData.created_at) + ' Likes: ');
 			$details.append($('<span>').text(likes));

@@ -90,23 +90,28 @@ article.tweet{
 		}
 		.icons {
 			color:$base-primary-colour;
-			display: none;
 			text-align: right;
 			width: 50%;
+			
 			i{
 				margin: 0 3px;
 			}
-		}
-		.fa-heart{
-			cursor: pointer;
+			.fa{
+				display: none;
+			}
+			&:hover .fa{
+				display: inline;
+			}
+			.fa-heart{
+				cursor: pointer;
 
-			&:hover{
-				color:red;
+				&:hover{
+					color:red;
+				}
+				&.red-text{
+					display: inline;
+				}
 			}
 		}
-	}
-
-	&:hover footer .icons{
-		display: inline;
 	}
 }
