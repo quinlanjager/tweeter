@@ -1,7 +1,7 @@
 /**
  * Count the characters of the tweet composer
  * @param  {object} event The event object from the listener that triggered the calculation
- * 
+ *
  */
 function countCharacters(event){
 	var textArea = $(this);
@@ -22,10 +22,14 @@ function countCharacters(event){
 /**
  * Listens for key up and down. Calls callback when either one occurs
  * @param  {Function} callback A valid function to handle the keyup and keydown events
- * 
+ *
  */
 function keyupanddown(element, callback){
 	element.keydown(callback);
   element.keyup(callback);
 }
 
+module.exports = {
+	countCharacters: countCharacters,
+	keyupanddown: keyupanddown
+};

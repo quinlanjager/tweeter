@@ -1,10 +1,24 @@
+// importing functions and assigning them
+var composerCharCounter = require('./composer-char-counter');
+var tweetCreationHelpers = require('./tweet-creation-helpers');
+
+var countCharacters = composerCharCounter.countCharacters;
+var keyupanddown = composerCharCounter.keyupanddown;
+
+var addPadding = tweetCreationHelpers.addPadding;
+var makeHeader = tweetCreationHelpers.makeHeader;
+var makeTimeStamp = tweetCreationHelpers.makeTimeStamp;
+var iconClickHandler = tweetCreationHelpers.iconClickHandler;
+var makeFooter = tweetCreationHelpers.makeFooter;
+var compileTweetElement = tweetCreationHelpers.compileTweetElement;
+
 $(function(){
-  var timeOfLastLoad = Date.now(); 
+  var timeOfLastLoad = Date.now();
 
   /**
    * Generate an error message label to be appended to the tweet composer form
    * @param  {string} message The message you'd like to communicate
-   * 
+   *
    */
   function generateTweetErrorMessage(message){
     // if label aready exists, just replace the text
@@ -12,7 +26,7 @@ $(function(){
     if($errorLabel.text().length){
       $errorLabel.text(message);
     } else{
-      $('<label>').text(message).addClass('red-text').appendTo($('.new-tweet form')); 
+      $('<label>').text(message).addClass('red-text').appendTo($('.new-tweet form'));
     }
   }
 
@@ -26,39 +40,42 @@ $(function(){
   }
 
   /**
-   * Loads up tweets via an AJAX call.
-   * 
-   */
-  function loadTweets(){
-    $.ajax({
-      url: '/tweets',
-      method: 'GET',
-    }).done(function(data){
-      var newData = data.filter(checkIfNewTweet);
-      // only render new tweets if this isn't the first time running are new tweets.
-      if(newData.length){
-        data = newData;
-      }
-      renderTweets(data);
-      timeOfLastLoad = Date.now();
-    })
-  }
-
-  /**
    * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
    * @param  {array} tweets   An array of tweet objects
-   * 
+   *
    */
   function renderTweets(tweets){
     tweets.forEach(function(tweet){
-      $('#tweets-container').prepend(compileTweetElement(tweet)); // prepend to show 'newest first', from tweet-creation-helpers
+      // prepend to show 'newest first', from tweet-creation-helpers
+      $('#tweets-container').prepend(compileTweetElement(tweet));
     });
   }
 
   /**
+   * Loads up tweets via an AJAX call.
+   *
+   */
+  function loadTweets(){
+    $.ajax({
+      url: '/tweets',
+      method: 'GET'
+    }).done(function(data){
+      var newData = data.filter(checkIfNewTweet);
+      var tweetData = data;
+      // only render new tweets if this isn't the first time running are new tweets.
+      if(newData.length){
+        tweetData = newData;
+      }
+      renderTweets(tweetData);
+      timeOfLastLoad = Date.now();
+    });
+  }
+
+
+  /**
    * Provides an error message if the form is invalid. Else submits the form via AJAX and loads up the new tweets.
    * @param  {object} event  The event object passed by the event listener.
-   * 
+   *
    */
   function formSubmissionHandler(event){
     event.preventDefault();
@@ -81,10 +98,12 @@ $(function(){
       method: 'POST',
       data: $tweetComposer.serialize(),
       beforeSend: function(){
-        $('.new-tweet form label.red-text').remove(); // if there is a warning label, remove it
+        // if there is a warning label, remove it
+        $('.new-tweet form label.red-text').remove();
       }
     }).done(function(data){
-        $('.new-tweet form textarea').val(''); // clear tweet composer (reset it)
+        // clear tweet composer (reset it)
+        $('.new-tweet form textarea').val('');
         loadTweets();
       });
   }
@@ -99,12 +118,10 @@ $(function(){
 
   // Toggle form field to slide down then focus on the composer
   $composerButton.click(function(){
-    $('.new-tweet').slideToggle()
+    $('.new-tweet').slideToggle();
     $('.new-tweet form textarea').focus();
-   })
-
-  $('#tweets-container ')
+  });
 
   // character counting
-  keyupanddown($composerTextArea, countCharacters); // from ./composer-char-counter
+  keyupanddown($composerTextArea, countCharacters);
 });
