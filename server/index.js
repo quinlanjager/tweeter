@@ -9,8 +9,10 @@ const app            = express();
 const MongoClient 	 = require("mongodb").MongoClient;
 const sassMiddleware = require("node-sass-middleware");
 const path           = require("path");
+const cookieParser   = require("cookie-parser");
 const MONGODB_URI 	 = "mongodb://localhost:27017/tweeter";
 
+app.use(cookieParser());
 app.use('/styles', sassMiddleware({
 	src: path.join( __dirname, '..', '/src', '/styles'),
 	dest: path.join(__dirname, '..', '/public', '/styles')

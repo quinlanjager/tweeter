@@ -1,6 +1,6 @@
 "use strict";
 
-const userHelper    = require("../lib/util/user-helper")
+const userHelper    = require("../lib/util/user-helper");
 
 const express       = require('express');
 const tweetsRoutes  = express.Router();
@@ -12,6 +12,9 @@ module.exports = function(DataHelpers) {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
+        if(!req.cookies){
+          res.cookie('userID', userHelper.generateRandomUser().handle);
+        }
         res.json(tweets);
       }
     });
@@ -29,7 +32,8 @@ module.exports = function(DataHelpers) {
       content: {
         text: req.body.text
       },
-      created_at: Date.now()
+      created_at: Date.now(),
+      likes: []
     };
 
     DataHelpers.saveTweet(tweet, (err) => {
@@ -41,9 +45,11 @@ module.exports = function(DataHelpers) {
     });
   });
 
-  tweetsRoutes.put("/:tweetID/:task", function(req, res) {
-    const {tweetID, task} = req.params;
-    DataHelpers.addLikeTo(tweetID, task, (result) => {
+  tweetsRoutes.put("/:tweetID", function(req, res) {
+    const {tweetID} = req.params;
+    console.log(req.cookies);
+    const {userID} = req.cookies.userID;
+    DataHelpers.addLikeTo(tweetID, userID, (result) => {
       res.json(result);
     })
   })
