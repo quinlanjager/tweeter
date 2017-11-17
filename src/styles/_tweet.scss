@@ -88,18 +88,16 @@ article.tweet{
 			margin-top: 0px;
 			width: 50%;
 		}
-		.icons {
+		.icons{
 			color:$base-primary-colour;
 			text-align: right;
 			width: 50%;
 			
 			i{
 				margin: 0 3px;
-			}
-			.fa{
 				display: none;
 			}
-			&:hover .fa{
+			&:hover i{
 				display: inline;
 			}
 			.fa-heart{
@@ -113,5 +111,43 @@ article.tweet{
 				}
 			}
 		}
+	}
+}
+
+		
+// large screen
+@media (min-width: 2300px){
+	
+}
+
+@media (min-width: 5607px){
+	article.tweet{
+		border: 3px solid $base-grey;
+		border-radius: 18px 18px 0 0;
+		margin-top: 48px;
+
+		&:hover{
+			border: 3px solid $base-grey-dark;
+		}
+		header{
+			img{
+				height:160px;
+				width:160px;
+			} 
+		}
+	} 
+}
+
+
+// small screens
+@media (max-width: 500px){
+	article.tweet{
+			footer {
+				.icons {
+					i {
+						display: inline;
+				}
+			}
+		} 
 	}
 }

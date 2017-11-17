@@ -27,5 +27,14 @@
  * Prevents the text area from being dragged too far out
  */
 #composer{
-	max-width: 360px;
+	width: 100%;
+	max-width: 100%;
+}
+
+// large screens
+@media (min-width: 5607px){
+	.new-tweet{
+		border: 3px solid $base-grey;
+		border-radius: 18px;
+	}
 }

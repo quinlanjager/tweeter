@@ -30,6 +30,7 @@ body {
 	padding: 140px 2em;
 	position: relative;
 	margin: 0 auto;
+	min-width: $min-content-width;
 	width: 450px;
 }
 
@@ -45,4 +46,34 @@ body {
 
 .red-text {
 	color:red;
+}
+
+// large screen
+
+@media (min-width: 2300px){
+	body {
+		font-size: $base-font-size * 2;
+	}
+	.container {
+		width: 40%;
+		padding-top: 140 + $min-nav-height;
+	}
+}
+
+@media (min-width: 5607px){
+	body {
+		font-size: $base-font-size * 4;
+	}
+	.container {
+		width: 40%;
+		padding-top: 140px + $min-nav-height * 2;
+	}
+}
+
+// Small screens
+@media (max-width: 500px){
+	body {
+		font-size: $base-font-size * 1.5;
+	}
+	
 }

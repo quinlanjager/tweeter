@@ -26,6 +26,7 @@ body {
   padding: 140px 2em;
   position: relative;
   margin: 0 auto;
+  min-width: 360px;
   width: 450px; }
 
 /*Effects*/
@@ -38,11 +39,30 @@ body {
 .red-text {
   color: red; }
 
+@media (min-width: 2300px) {
+  body {
+    font-size: 32px; }
+  .container {
+    width: 40%;
+    padding-top: 220px; } }
+
+@media (min-width: 5607px) {
+  body {
+    font-size: 64px; }
+  .container {
+    width: 40%;
+    padding-top: 300px; } }
+
+@media (max-width: 500px) {
+  body {
+    font-size: 24px; } }
+
 #nav-bar {
   background-color: #00a087;
   color: #e8fdff;
   display: flex;
   justify-content: space-between;
+  min-width: 360px;
   position: fixed;
   padding: 0 2em;
   height: 80px;
@@ -62,6 +82,33 @@ body {
   #nav-bar .nav-buttons button {
     position: relative;
     top: 25px; }
+
+@media (min-width: 2300px) {
+  #nav-bar {
+    height: 160px; }
+    #nav-bar .logo-header .logo {
+      float: left;
+      height: 160px;
+      width: 160px; } }
+
+@media (min-width: 5607px) {
+  #nav-bar {
+    height: 240px; }
+    #nav-bar .logo-header .logo {
+      float: left;
+      height: 240px;
+      width: 240px; }
+    #nav-bar .logo-header .header {
+      line-height: 1.75;
+      margin-left: 20px; } }
+
+@media (max-width: 500px) {
+  #nav-bar .logo-header .logo {
+    float: left;
+    height: 80px;
+    width: 80px; }
+  #nav-bar .logo-header .header {
+    display: none; } }
 
 .new-tweet {
   background-color: #EEE;
@@ -85,7 +132,13 @@ body {
  * Prevents the text area from being dragged too far out
  */
 #composer {
-  max-width: 360px; }
+  width: 100%;
+  max-width: 100%; }
+
+@media (min-width: 5607px) {
+  .new-tweet {
+    border: 3px solid #ccc;
+    border-radius: 18px; } }
 
 /* Adding padding to everything*/
 /**
@@ -162,10 +215,9 @@ article.tweet {
       text-align: right;
       width: 50%; }
       article.tweet footer .icons i {
-        margin: 0 3px; }
-      article.tweet footer .icons .fa {
+        margin: 0 3px;
         display: none; }
-      article.tweet footer .icons:hover .fa {
+      article.tweet footer .icons:hover i {
         display: inline; }
       article.tweet footer .icons .fa-heart {
         cursor: pointer; }
@@ -173,3 +225,18 @@ article.tweet {
           color: red; }
         article.tweet footer .icons .fa-heart.red-text {
           display: inline; }
+
+@media (min-width: 5607px) {
+  article.tweet {
+    border: 3px solid #ccc;
+    border-radius: 18px 18px 0 0;
+    margin-top: 48px; }
+    article.tweet:hover {
+      border: 3px solid #666; }
+    article.tweet header img {
+      height: 160px;
+      width: 160px; } }
+
+@media (max-width: 500px) {
+  article.tweet footer .icons i {
+    display: inline; } }
