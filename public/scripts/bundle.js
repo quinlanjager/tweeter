@@ -236,9 +236,10 @@ function iconClickHandler(tweetData, $icon){
 				method: 'PUT'
 			});
 			$icon.removeData('liked');
+			$icon.toggleClass('red-text');
 			return;
 		}
-
+		$icon.toggleClass('red-text');
 		$icon.data('liked', true);
 		$likes.text(Number(tweetData.likes) + 1);
 		$.ajax({
