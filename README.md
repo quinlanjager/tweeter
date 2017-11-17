@@ -2,6 +2,15 @@
 
 Tweeter is a simple, single-page Twitter clone. Using AJAX techniques, Tweeter dynamically makes HTTP requests without needing a page reload. This creates a seamless user experience. To make data persistent, even in the event of a server restart, tweets are saved to a database powered by MongoDB.
 
+#### Tweet Composer
+
+![Tweet composer interface](./docs/tweeter_composer.png)
+
+#### List of Tweets
+
+![Tweets list](./docs/tweeter_home.png)
+
+
 ## Getting Started
 
 1. Clone or download this repository.
