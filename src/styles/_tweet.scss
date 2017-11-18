@@ -17,6 +17,9 @@ article.tweet{
 	&:hover{
 		border: 1px solid $base-grey-dark;
 	}
+	&:hover footer .icons i {
+		display: inline;
+	}
 
 	/** 
  	 * Tweet Header Styles

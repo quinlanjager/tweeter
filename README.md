@@ -1,6 +1,8 @@
 # Tweeter Project
 
-Tweeter is a simple, single-page Twitter clone. Using AJAX techniques, Tweeter dynamically makes HTTP requests without needing a page reload. This creates a seamless user experience. To make data persistent, even in the event of a server restart, tweets are saved to a database powered by MongoDB.
+Tweeter is a simple, single-page Twitter clone. Using AJAX techniques, Tweeter dynamically makes HTTP requests without needing a page reload. This creates a seamless user experience. To make data persistent, tweets are saved to a database powered by MongoDB.
+
+Users must log in in order to tweet and like tweets. Of course, users cannot like their own tweets. User data is stored server side and accessed via express-session. To ensure account security, bcrypt handles the password hashing.
 
 #### Tweet Composer
 

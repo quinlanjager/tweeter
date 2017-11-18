@@ -237,6 +237,8 @@ article.tweet {
  */ }
   article.tweet:hover {
     border: 1px solid #666; }
+  article.tweet:hover footer .icons i {
+    display: inline; }
   article.tweet header {
     padding: .75em;
     color: #687C83;
