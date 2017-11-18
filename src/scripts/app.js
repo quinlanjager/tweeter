@@ -33,28 +33,6 @@ function renderTweets(tweets, TweetComponents){
   });
 }
 
-
-/**Load up tweets with AJAX.*/
-function initializeApp(appTasks){
-  $.getJSON('/tweets', function(data) {
-    var TweetComponents = require('./utils/tweet-components')(data.user);
-    var tweetData = data.tweets;
-    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
-    // set the time of last loast to now
-    timeOfLastLoad = Date.now();
-
-    // only render new tweets.
-    if(newTweetsOnly.length){
-      renderTweets(newTweetsOnly, TweetComponents);
-      return;
-    }
-    
-    renderTweets(tweetData, TweetComponents);
-    appTasks(data.user);
-  });
-}
-
-
 /**
  * Provides an error message if the form is invalid. Else submits the form via AJAX and loads up the new tweets.
  *
@@ -96,9 +74,30 @@ function formSubmissionHandler(event){
   });
 }
 
+/**Load up tweets with AJAX.*/
+function initializeApp(appTasks){
+  $.getJSON('/tweets', function(data) {
+    var tweetData = data.tweets;
+    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
+    // set the time of last loast to now
+    timeOfLastLoad = Date.now();
+
+    // only render new tweets.
+    if(newTweetsOnly.length){
+      appTasks(data.user, newTweetsOnly);
+      return;
+    }
+    appTasks(data.user, tweetData);
+  });
+}
+
+
+
 /** Initialization */
 $(function(){
-  initializeApp(function(USER_DATA){
+  initializeApp(function(USER_DATA, TWEET_DATA){
+    var TweetComponents = require('./utils/tweet-components')(USER_DATA);
+    
     var $composerTextArea = $('#composer');
     var $tweetForm = $('.new-tweet form');
     var $logInForm = $('#loginForm');
@@ -109,6 +108,7 @@ $(function(){
     var $registerLink = $('a.register-link');
     var $loginLink = $('a.login-link');
 
+    renderTweets(TWEET_DATA, TweetComponents);
 
     if(USER_DATA){
       $('.container').prepend($('<h2>').text('Welcome, ' + USER_DATA.handle));
