@@ -23,7 +23,7 @@ app.use(session({
 		resave: false
 	}));
 
-// handle the sass
+// handle sass
 app.use('/styles', sassMiddleware({
 	src: path.join( __dirname, '..', '/src', '/styles'),
 	dest: path.join(__dirname, '..', '/public', '/styles')
@@ -59,7 +59,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 		db.collection('users').findOne({'handle': handle}, (err, user) => {
 			// verify that there is no user with this handle
 			if(user){
-				res.send(`<label>A user with this handle already exists</label>`)	
+				res.send('A user with this handle already exists');	
 					return;
 			}
 			const avatarUrlPrefix = `https://vanillicon.com/${md5(handle)}`;
@@ -99,7 +99,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 				return;
 			}
 			if(!user){
-				res.send('<label>Your handle or password could not be found</label>');
+				res.send('Your handle or password could not be found');
 				return;
 			}
 			bcrypt.compare(password, user.password, (err, result) => {
@@ -113,7 +113,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 					return;
 				}
 				// add more appropriate error message
-				res.send('<label>Your handle or password could not be found</label>');
+				res.send('Your handle or password could not be found');
 			});
 		});
 	});
@@ -124,7 +124,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 	});
 
 	app.listen(PORT, () => {
-	  console.log("Example app listening on port " + PORT);
+	  console.log('Example app listening on port ' + PORT);
 	});
 });
 
