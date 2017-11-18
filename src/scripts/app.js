@@ -1,6 +1,8 @@
 // importing functions and assigning them
 var composerCharCounter = require('./composer-char-counter');
 var tweetCreationHelpers = require('./tweet-creation-helpers');
+var loginFormHandler = require('./login-form-handler');
+
 
 var countCharacters = composerCharCounter.countCharacters;
 var keyupanddown = composerCharCounter.keyupanddown;

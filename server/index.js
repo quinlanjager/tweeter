@@ -12,7 +12,10 @@ const path           = require("path");
 const cookieParser   = require("cookie-parser");
 const session        = require("express-session");
 const bcrypt         = require("bcrypt");
+const md5 = require('md5');
+
 const MONGODB_URI 	 = "mongodb://localhost:27017/tweeter";
+const saltRound      = 10;
 
 app.use(cookieParser());
 
@@ -39,6 +42,39 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 
 	// Mount the tweets routes at the "/tweets" path prefix:
 	app.use("/tweets", tweetsRoutes);
+
+	app.post("/register", (req, res) => {
+		const { password, name } = req.body
+		const handle = `@${req.body.handle}`;
+		db.collection('users').find().toArray((err, users) => {
+			console.log(users);
+			for(let user of users){
+				console.log(user);
+				if(user.handle === handle){
+					res.send(`<label>A user with this handle already exists</label>`)	
+					return;
+				}
+			}
+			bcrypt.hash(password, 10, (err, password) => {
+				console.log(password);
+				const avatarUrlPrefix = `https://vanillicon.com/${md5(handle)}`;
+				const avatars = {
+      		small:   `${avatarUrlPrefix}_50.png`,
+      		regular: `${avatarUrlPrefix}.png`,
+      		large:   `${avatarUrlPrefix}_200.png`
+    		};
+				const user = {
+					name,
+					avatars,
+					handle,
+					password
+				};
+				db.collection('users').insert(user, () => {
+					res.send(`<label>You've successfully registered</label>`);
+				});
+			});
+		});
+	});
 
 	app.listen(PORT, () => {
 	  console.log("Example app listening on port " + PORT);
