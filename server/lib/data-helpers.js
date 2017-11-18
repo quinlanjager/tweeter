@@ -51,6 +51,18 @@ module.exports = function makeDataHelpers(db) {
           }
         });
       });
+    },
+
+    getUser: function(user_id, callback){
+      db.collection('users').findOne({"id": user_id}, (err, doc) => {
+        const {name, handle, avatars} = doc;
+        let user = {
+          name,
+          handle,
+          avatars
+        }
+        callback(user);
+      });    
     }
   }
 };

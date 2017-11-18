@@ -31,25 +31,24 @@ module.exports = function(DataHelpers) {
       res.send('You must be logged in to post a tweet.');
       return;
     }
+    DataHelpers.getUser(req.session.user_id, (user) => {      
+      const tweet = {
+        user: user,
+        content: {
+          text: req.body.text
+        },
+        created_at: Date.now(),
+        likes: []
+      };
 
-    const user = req.body.user ? req.body.user : userHelper.generateRandomUser();
-    
-    const tweet = {
-      user: user,
-      content: {
-        text: req.body.text
-      },
-      created_at: Date.now(),
-      likes: []
-    };
-
-    DataHelpers.saveTweet(tweet, (err) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-      } else {
-        res.status(201).send();
-      }
-    });
+      DataHelpers.saveTweet(tweet, (err) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+        } else {
+          res.status(201).send();
+        }
+      });
+    })
   });
 
   tweetsRoutes.put("/:tweetID", function(req, res) {

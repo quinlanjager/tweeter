@@ -2,7 +2,6 @@
 var timeOfLastLoad = Date.now();
 var composerCharCounter = require('./composer-char-counter');
 var tweetCreationHelpers = require('./tweet-creation-helpers');
-var loginFormHandler = require('./login-form-handler');
 
 
 var countCharacters = composerCharCounter.countCharacters;
@@ -62,9 +61,7 @@ $(function(){
       url: '/tweets',
       method: 'GET'
     }).done(function(data){
-      if(data.loggedIn){
-        loggedIn = true;
-      } else {
+      if(!data.loggedIn){
         $('#nav-bar .nav-login').removeClass('hide');
       }
       var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
@@ -108,7 +105,11 @@ $(function(){
         // if there is a warning label, remove it
         $('.new-tweet form label.red-text').remove();
       }
-    }).done(function(data){
+    }).done(function(err){
+        if(err === 'You must be logged in to post a tweet.'){
+          generateTweetErrorMessage(err);
+          return;
+        }
         // clear tweet composer (reset it)
         $('.new-tweet form textarea').val('');
         loadTweets();

@@ -84,7 +84,6 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 						console.log(err);
 						return;
 					}
-					console.log(req.session);
 					req.session.user_id = id;
 					res.redirect('/');
 				});
@@ -95,17 +94,14 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 	app.post("/login", (req, res) => {
 		const { password } = req.body;
 		const handle = `@${req.body.handle}`
-		console.log(handle);
 		getCollectionAsArray('users', (err, users) => {
 			for(let user of users){
 				if(user.handle === handle){
-					console.log('handle found');
 					bcrypt.compare(password, user.password, (err, result) => {
 						if(err){
 							console.log(err);
 							return;
 						}
-						console.log(result);
 						if(result){
 							req.session.user_id = user.id;
 							res.redirect('/');

@@ -78,13 +78,15 @@ function iconClickHandler(tweetData, $icon){
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
-		}).done((result) => {
-			if(result){
+		}).done((err) => {
+			// if there is an error message
+			if(err){
 				$likes.text(likesNumber);
 				$icon.toggleClass('red-text');
 				$icon.removeData('liked', true);
-				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(result);
+				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(err);
 			}
+			// close connection here.
 		});
 	};
 }

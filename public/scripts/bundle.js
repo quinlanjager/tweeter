@@ -3,7 +3,6 @@
 var timeOfLastLoad = Date.now();
 var composerCharCounter = require('./composer-char-counter');
 var tweetCreationHelpers = require('./tweet-creation-helpers');
-var loginFormHandler = require('./login-form-handler');
 
 
 var countCharacters = composerCharCounter.countCharacters;
@@ -63,9 +62,7 @@ $(function(){
       url: '/tweets',
       method: 'GET'
     }).done(function(data){
-      if(data.loggedIn){
-        loggedIn = true;
-      } else {
+      if(!data.loggedIn){
         $('#nav-bar .nav-login').removeClass('hide');
       }
       var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
@@ -109,7 +106,11 @@ $(function(){
         // if there is a warning label, remove it
         $('.new-tweet form label.red-text').remove();
       }
-    }).done(function(data){
+    }).done(function(err){
+        if(err === 'You must be logged in to post a tweet.'){
+          generateTweetErrorMessage(err);
+          return;
+        }
         // clear tweet composer (reset it)
         $('.new-tweet form textarea').val('');
         loadTweets();
@@ -133,7 +134,7 @@ $(function(){
   // character counting
   keyupanddown($composerTextArea, countCharacters);
 });
-},{"./composer-char-counter":2,"./login-form-handler":3,"./tweet-creation-helpers":4}],2:[function(require,module,exports){
+},{"./composer-char-counter":2,"./tweet-creation-helpers":3}],2:[function(require,module,exports){
 /**
  * Count the characters of the tweet composer
  * @param  {object} event The event object from the listener that triggered the calculation
@@ -170,8 +171,6 @@ module.exports = {
 	keyupanddown: keyupanddown
 };
 },{}],3:[function(require,module,exports){
-
-},{}],4:[function(require,module,exports){
 /**
  * Tweet creation functions.
  */
@@ -252,13 +251,15 @@ function iconClickHandler(tweetData, $icon){
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
-		}).done((result) => {
-			if(result){
+		}).done((err) => {
+			// if there is an error message
+			if(err){
 				$likes.text(likesNumber);
 				$icon.toggleClass('red-text');
 				$icon.removeData('liked', true);
 				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(result);
 			}
+			// close connection here.
 		});
 	};
 }
