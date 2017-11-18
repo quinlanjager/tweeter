@@ -24,12 +24,11 @@ function countCharacters(event){
  * @param  {Function} callback A valid function to handle the keyup and keydown events
  *
  */
-function keyupanddown(element, callback){
-	element.keydown(callback);
-  element.keyup(callback);
+function keyupanddown(element){
+	element.keydown(countCharacters);
+  element.keyup(countCharacters);
 }
 
 module.exports = {
-	countCharacters: countCharacters,
-	keyupanddown: keyupanddown
+	keyupanddown: keyupanddown,
 };

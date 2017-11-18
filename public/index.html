@@ -25,42 +25,44 @@
 
     <!-- Top nav bar (fixed) -->
     <nav id="nav-bar">
+      <form id="logout" class="hide" action="/logout" method="POST">
+      </form>
       <section class="logo-header">
         <img class="logo" src="/images/bird.png">
         <span class="header">Tweeter</span>
       </section>
-      <section class="nav-login">
-        <button class="close">x</button>
+      <section class="nav-login hide">
         <form id="register" action="/register" method="POST">
-          <h4>Register</h4>
+          <label><strong>Register</strong></label>
           <input type="text" name="name" placeholder="name">
           <input type="text" name="handle" placeholder="handle">
           <input type="password" name="password" placeholder="password">
           <button>Register</button>
+          <p>Already have an account? <a href="#" class='login-link'>Login.</a></p>
+
         </form>
          <form id="loginForm" action="/login" method="POST">
           <label><strong>Login</strong></label>
           <input type="text" name="handle" placeholder="handle">
           <input type="password" name="password" placeholder="password">
           <button>login</button> 
-          <p>Don't have an account? <a href="#" class='register-link'>Register</a></p>
+          <p>Don't have an account? <a href="#" class='register-link'>Register to like and tweet!</a></p>
         </form>
       </section>
       <section class="nav-buttons">
-        <button id="compose">Compose</button>
-        <button id="login">Login</button>
-        <button form="logout">logout</button>
+        <button id="composeButton">Compose</button>
+        <button id="loginButton">Login</button>
+        <button id="logoutButton" class="hide" form="logout">logout</button>
       </section>
-      <form id="logout" action="/logout" method="POST">
-        
-      </form>
+      <section class="nav-user">
+      </section>
     </nav>
 
     <!-- Page-specific (main) content here -->
     <main class="container">
       <!-- Tweet composer -->
       <section class="new-tweet">
-      <h2>Compose Tweet</h2>
+      <h3>Compose Tweet</h3>
         <form method="post" action="/tweets">
           <textarea id="composer" name="text" placeholder="What are you humming about?"></textarea>
           <input type="submit" value="Tweet">

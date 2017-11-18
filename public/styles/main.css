@@ -28,6 +28,8 @@ body {
   margin: 0 auto;
   min-width: 360px;
   width: 450px; }
+  .container > p {
+    margin-bottom: 24px; }
 
 /*Effects*/
 @keyframes fadeIn {
@@ -85,6 +87,7 @@ body {
     float: right; }
     #nav-bar .nav-buttons button {
       position: relative;
+      margin-right: 8px;
       top: 25px; }
   #nav-bar .nav-login {
     background-color: #00a087;
@@ -95,40 +98,28 @@ body {
     bottom: 0;
     left: 0;
     width: 500px;
-    height: 270px;
+    height: 300px;
     overflow: hidden;
     border-radius: 6px; }
-    #nav-bar .nav-login button.close {
-      position: relative;
-      cursor: pointer;
-      color: white;
-      background-color: #00a087;
-      font-size: 24px;
-      z-index: 100;
-      margin: 12px;
-      border: none;
-      width: 24px;
-      height: 24px; }
     #nav-bar .nav-login form {
       background-color: #00a087;
       width: 100%;
       height: 100%;
       position: absolute;
+      top: 40px;
       text-align: center; }
+      #nav-bar .nav-login form#register {
+        top: 30px; }
       #nav-bar .nav-login form#login {
         z-index: 99; }
       #nav-bar .nav-login form input {
-        margin: 16px auto;
+        margin: 15px auto;
         display: block;
         padding: 4px; }
       #nav-bar .nav-login form label {
         margin: 8px auto;
         display: block;
         text-align: center; }
-      #nav-bar .nav-login form button {
-        cursor: pointer;
-        margin: 8px auto;
-        display: block; }
 
 @media (min-width: 2300px) {
   #nav-bar {
@@ -136,7 +127,15 @@ body {
     #nav-bar .logo-header .logo {
       float: left;
       height: 160px;
-      width: 160px; } }
+      width: 160px; }
+    #nav-bar .nav-buttons {
+      float: right; }
+      #nav-bar .nav-buttons button {
+        position: relative;
+        top: 40px; }
+    #nav-bar .nav-login {
+      width: 1000px;
+      height: 400px; } }
 
 @media (min-width: 5607px) {
   #nav-bar {
@@ -147,7 +146,25 @@ body {
       width: 240px; }
     #nav-bar .logo-header .header {
       line-height: 1.75;
-      margin-left: 20px; } }
+      margin-left: 20px; }
+    #nav-bar .nav-buttons {
+      float: right; }
+      #nav-bar .nav-buttons button {
+        position: relative;
+        top: 50px; }
+    #nav-bar .nav-login {
+      border-radius: 18px;
+      width: 2400px;
+      height: 900px; }
+      #nav-bar .nav-login form {
+        background-color: #00a087;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 120px;
+        text-align: center; }
+        #nav-bar .nav-login form#register {
+          top: 110px; } }
 
 @media (max-width: 500px) {
   #nav-bar .logo-header .logo {
@@ -155,7 +172,15 @@ body {
     height: 80px;
     width: 80px; }
   #nav-bar .logo-header .header {
-    display: none; } }
+    display: none; }
+  #nav-bar .nav-login {
+    width: 500px;
+    height: 400px; }
+    #nav-bar .nav-login p {
+      width: 50%;
+      margin: 16px auto; }
+    #nav-bar .nav-login button {
+      margin-top: 16px; } }
 
 .new-tweet {
   background-color: #EEE;
@@ -163,7 +188,7 @@ body {
   border-radius: 6px;
   padding: .75em;
   display: none; }
-  .new-tweet h2 {
+  .new-tweet h3 {
     border-bottom: 1px solid #666;
     margin-top: 0;
     padding-bottom: 1px; }

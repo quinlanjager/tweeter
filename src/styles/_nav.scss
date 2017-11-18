@@ -28,6 +28,7 @@
 		float: right;
 		button{
 			position: relative;
+			margin-right: 8px;
 			top:25px;
 		}
 	}
@@ -40,34 +41,25 @@
 		bottom:0;
 		left:0;
 		width: 500px;
-		height:270px;
+		height:300px;
 		overflow: hidden;
 		border-radius: 6px;
-
-		button.close{
-			position: relative;
-			cursor: pointer;
-			color: white;
-			background-color: $base-primary-colour;
-			font-size: $base-font-size * 1.5;
-			z-index: 100;
-			margin: 12px;
-			border: none;
-			width: 24px;
-			height: 24px;
-		}
 
 		form{
 			background-color:$base-primary-colour;
 			width: 100%;
 			height:100%;
 			position: absolute;
+			top:40px;
 			text-align: center;
+			&#register{
+				top:30px;
+			}
 			&#login{
 				z-index: 99;
 			}
 			input{
-				margin: 16px auto;
+				margin: 15px auto;
 				display: block;
 				padding: 4px;
 			}
@@ -76,11 +68,7 @@
 				display: block;
 				text-align: center;
 			}
-			button{
-				cursor: pointer;
-				margin: 8px auto;
-				display: block;
-			}
+			
 		}
 
 	}
@@ -99,6 +87,17 @@
 				width: $min-nav-height * 2;
 			}
 		}
+		.nav-buttons{
+			float: right;
+			button{
+				position: relative;
+				top:40px;
+			}
+		}	
+		.nav-login{
+				width: 1000px;
+				height:400px;
+		}
 	}
 }
 
@@ -116,6 +115,29 @@
 				margin-left: 20px;
 			}
 		}
+		.nav-buttons{
+			float: right;
+			button{
+				position: relative;
+				top:50px;
+			}
+		}	
+		.nav-login{
+				border-radius:18px;
+				width: 2400px;
+				height:900px;
+				form{
+				background-color:$base-primary-colour;
+				width: 100%;
+				height:100%;
+				position: absolute;
+				top:120px;
+				text-align: center;
+				&#register{
+					top:110px;
+				}
+			}
+		}
 	}
 }
 
@@ -131,6 +153,17 @@
 			}
 			.header{
 				display: none;
+			}
+		}
+		.nav-login{
+			width: 500px;
+			height:400px;
+			p{
+				width: 50%;
+				margin: 16px auto;
+			}
+			button{
+				margin-top: 16px;
 			}
 		}
 	}

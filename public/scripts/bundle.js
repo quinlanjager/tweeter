@@ -1,10 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// importing functions and assigning them
 var timeOfLastLoad = Date.now();
-var composerCharCounter = require('./utils/composer-char-counter');
-
-var countCharacters = composerCharCounter.countCharacters;
-var keyupanddown = composerCharCounter.keyupanddown;
+var ComposerCharCounter = require('./utils/composer-char-counter');
 
 /**
  * Generate an error message label to be appended to the tweet composer form
@@ -22,56 +18,46 @@ function generateTweetErrorMessage(message){
 }
 
 /**
- * Check if argument tweet was created after the last time tweets were loaded.
- * @param  {object} tweet   An individual tweet object from an array of tweets.
- * @return {boolean}        A coerced truthy of falsey value depending on when the tweet was created
- */
-function checkIfNewTweet(tweet){
-  return tweet.created_at > timeOfLastLoad;
-}
-
-/**
  * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
  * @param  {array} tweets   An array of tweet objects
  *
  */
 function renderTweets(tweets, TweetComponents){
   tweets.forEach(function(tweet){
-    // prepend to show 'newest first', from tweet-creation-helpers
     var $tweet = $('<article>').addClass('tweet');
     var $main = $('<main>').append($('<p>').text(tweet.content.text));
     $tweet.append(TweetComponents.makeHeader(tweet.user))
-                 .append($main)
-                 .append(TweetComponents.makeFooter(tweet));
-    console.log($tweet);
+          .append($main)
+          .append(TweetComponents.makeFooter(tweet));
+    // prepend to show 'newest first'
     $('#tweets-container').prepend($tweet);
-  })
+  });
 }
 
 
 /**Load up tweets with AJAX.*/
-function loadTweets(){
-  $.ajax({
-    url: '/tweets',
-    method: 'GET'
-  }).done(function(data){
-    console.log(data);
-    var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
-    var tweetData = data.tweets;
-    // only render new tweets if this isn't the first time running are new tweets.
-    if(newTweetsOnly.length){
-      tweetData = newTweetsOnly;
-    }
+function initializeApp(appTasks){
+  $.getJSON('/tweets', function(data) {
     var TweetComponents = require('./utils/tweet-components')(data.user);
-    renderTweets(tweetData, TweetComponents);
+    var tweetData = data.tweets;
+    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
+    // set the time of last loast to now
     timeOfLastLoad = Date.now();
+
+    // only render new tweets.
+    if(newTweetsOnly.length){
+      renderTweets(newTweetsOnly, TweetComponents);
+      return;
+    }
+    
+    renderTweets(tweetData, TweetComponents);
+    appTasks(data.user);
   });
 }
 
 
 /**
  * Provides an error message if the form is invalid. Else submits the form via AJAX and loads up the new tweets.
- * @param  {object} event  The event object passed by the event listener.
  *
  */
 function formSubmissionHandler(event){
@@ -89,8 +75,7 @@ function formSubmissionHandler(event){
     return;
   }
   
-  // Make ajax call
-  $.ajax({
+  var ajaxOptions = {
     url: '/tweets',
     method: 'POST',
     data: $tweetComposer.serialize(),
@@ -98,43 +83,63 @@ function formSubmissionHandler(event){
       // if there is a warning label, remove it
       $('.new-tweet form label.red-text').remove();
     }
-  }).done(function(err){
-      // if an error message is received
-      if(err){
-        generateTweetErrorMessage(err);
-        return;
-      }
-      // clear tweet composer (reset it)
-      $('.new-tweet form textarea').val('');
-      loadTweets();
-    });
+  };
+
+  // Make ajax call
+  $.ajax(ajaxOptions).done(function(err){
+    if(err){
+      generateTweetErrorMessage(err);
+      return;
+    }
+    // clear tweet composer (reset it)
+    $('.new-tweet form textarea').val('');
+    loadTweets();
+  });
 }
 
 /** Initialization */
 $(function(){
-  loadTweets();
+  initializeApp(function(USER_DATA){
+    var $composerTextArea = $('#composer');
+    var $tweetForm = $('.new-tweet form');
+    var $logInForm = $('#loginForm');
+    // buttons
+    var $composerButton = $('#composeButton');
+    var $logInButton = $('#loginButton');
+    var $logOutButton = $('#logoutButton');
+    var $registerLink = $('a.register-link');
+    var $loginLink = $('a.login-link');
 
-  var $composerTextArea = $('#composer');
-  var $form = $('.new-tweet form');
-  var $composerButton = $('#compose');
-  var $loginButton = $('#login');
-  console.log($loginButton);
-  
-  // handles form submission
-  $form.submit(formSubmissionHandler);
 
-  // Toggle form field to slide down then focus on the composer
-  $composerButton.click(function(){
-    $('.new-tweet').slideToggle();
-    $('.new-tweet form textarea').focus();
+    if(USER_DATA){
+      $('.container').prepend($('<h2>').text('Welcome, ' + USER_DATA.handle));
+      $logInButton.addClass('hide');
+      $logOutButton.removeClass('hide');
+    }
+    
+    // Form submission events
+    $tweetForm.submit(formSubmissionHandler);
+    // button events
+    $composerButton.click(function(){
+      $('.new-tweet').slideToggle();
+      $('.new-tweet form textarea').focus();
+    });
+    $logInButton.click(function(event){
+      event.preventDefault();
+      $('#nav-bar .nav-login').toggleClass('hide');
+    });
+    $registerLink.click(function(event){
+      event.preventDefault();
+      $('#loginForm').toggleClass('hide');
+    });
+    $loginLink.click(function(event){
+      event.preventDefault();
+      $('#loginForm').toggleClass('hide');
+    })
+
+    // character counting
+    ComposerCharCounter.keyupanddown($composerTextArea);
   });
-  $loginButton.click(function(){
-    console.log('Event is working');
-    $('#nav-bar .nav-login').toggleClass('hide');
-  });
-
-  // character counting
-  keyupanddown($composerTextArea, countCharacters);
 });
 },{"./utils/composer-char-counter":2,"./utils/tweet-components":3}],2:[function(require,module,exports){
 /**
@@ -163,94 +168,24 @@ function countCharacters(event){
  * @param  {Function} callback A valid function to handle the keyup and keydown events
  *
  */
-function keyupanddown(element, callback){
-	element.keydown(callback);
-  element.keyup(callback);
+function keyupanddown(element){
+	element.keydown(countCharacters);
+  element.keyup(countCharacters);
 }
 
 module.exports = {
-	countCharacters: countCharacters,
-	keyupanddown: keyupanddown
+	keyupanddown: keyupanddown,
 };
 },{}],3:[function(require,module,exports){
+	
 module.exports = function(user_data){
-
-	var TweetComponents = {};
-	/**
-	 * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
-	 * @param  {object} $icon The jQuery object representing the icon we're changing.
-	*/
-	function iconClickHandler($heartIcon, tweet){
-		return function(event){
-			//isolate the click event
-			event.stopPropagation();
-
-			var $likes = $heartIcon.closest('footer').find('p span');
-			var likesNumber = tweet.likes.length;
-
-			// error handling
-			if(!user_data){
-				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You must be loggedIn to like tweets.');
-				return;
-			}
-			if(user_data.handle === tweet.user.handle){
-				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You can\'t like your own tweets');
-				return;
-			}
-
-			$heartIcon.toggleClass('red-text');
-			
-			// if the tweet is already liked
-			if($heartIcon.data('liked') === true){
-				$likes.text(likesNumber);
-				$.ajax({
-					url: '/tweets/' + tweet._id,
-					method: 'DELETE'
-				});
-				$heartIcon.removeData('liked');
-				return;
-			}
-
-			// If the tweet hasn't been liked.
-			$heartIcon.data('liked', true);
-			$likes.text(likesNumber + 1);
-			$.ajax({
-				url: '/tweets/' + tweet._id,
-				method: 'PUT'
-			}).done(function(res){
-				console.log(res);
-			});
-		};
-	}
-
-	/**
-	 * Adds zero padding to single digit numbers. Made for the time stamp
-	 */
+	
 	function addPadding (num){
 		var str = num.toString();
 		while(str.length !== 2){
 			str = '0' + str;
 		}
 		return str;
-	}
-
-	/**
-	 * Creates a time stamp based on how much time has passed since the last tweet.
-	 */
-	function makeTimeStamp (timeTweetCreated){
-		var timeTweetCreatedDate = new Date(timeTweetCreated);
-		var currentDate = Date.now();
-		var timeStamp = Math.round((currentDate - timeTweetCreatedDate) / 86400000);
-		// Formatting text based on age.
-		if(timeStamp > 14){
-			timeStamp = timeTweetCreatedDate.toDateString();
-		} else if (timeStamp === 0){
-			timeStamp = addPadding(timeTweetCreatedDate.getHours()) + ':' + addPadding(timeTweetCreatedDate.getMinutes()) + ' today';
-		} else {
-			var days = timeStamp === 1 ? ' day' : ' days';
-			timeStamp = timeStamp + days + ' ago.';
-		}
-		return timeStamp;
 	}
 
 	/**
@@ -267,10 +202,69 @@ module.exports = function(user_data){
 	}
 
 	/**
+	 * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
+	 * @param  {object} $icon The jQuery object representing the icon we're changing.
+	*/
+	function iconClickHandler($heartIcon, tweet){
+		return function(event){
+			event.stopPropagation();
+			// error handling
+			if(!user_data){
+				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You must be loggedIn to like tweets.');
+				return;
+			}
+			if(user_data.handle === tweet.user.handle){
+				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You can\'t like your own tweets');
+				return;
+			}
+
+			var $likesContainer = $heartIcon.closest('footer').find('p span');
+			var numberOfLikes = tweet.likes.length;
+			$heartIcon.toggleClass('red-text');
+			
+			// if the tweet is already liked
+			if($heartIcon.data('liked') === true){
+				$likesContainer.text(numberOfLikes);
+				$heartIcon.removeData('liked');
+				$.ajax({
+					url: '/tweets/' + tweet._id,
+					method: 'DELETE'
+				});
+				return;
+			}
+
+			$heartIcon.data('liked', true);
+			$likesContainer.text(numberOfLikes + 1);
+			$.ajax({
+				url: '/tweets/' + tweet._id,
+				method: 'PUT'
+			});
+		};
+	}
+
+	/**
+	 * Creates a time stamp based on how much time has passed since the last tweet.
+	 */
+	function makeTimeStamp (timeTweetCreated){
+		var timeTweetCreatedDate = new Date(timeTweetCreated);
+		var currentDate = Date.now();
+		var timeStamp = Math.round((currentDate - timeTweetCreatedDate) / 86400000);
+		// Formatting text based on age.
+		if(timeStamp > 14){
+			timeStamp = timeTweetCreatedDate.toDateString();
+		} if (timeStamp === 0){
+			timeStamp = addPadding(timeTweetCreatedDate.getHours()) + ':' + addPadding(timeTweetCreatedDate.getMinutes()) + ' today';
+		} else {
+			var days = timeStamp === 1 ? ' day' : ' days';
+			timeStamp = timeStamp + days + ' ago.';
+		}
+		return timeStamp;
+	}
+
+
+	/**
 	 * A factory function for the heart icon.
-	 * @param  {[type]} $heartIcon [description]
-	 * @param  {[type]} tweet      [description]
-	 * @return {[type]}            [description]
+	 * 
 	 */
 	function makeHeartIcon($heartIcon, tweet){
 		$heartIcon.click(iconClickHandler($heartIcon, tweet));
@@ -284,6 +278,7 @@ module.exports = function(user_data){
 		return $heartIcon;
 	}
 
+	var TweetComponents = {};
 	// interface functions for assembling header and footer
 	TweetComponents.makeHeader = function (user) {
 		var $header = $('<header>');
@@ -298,15 +293,14 @@ module.exports = function(user_data){
 	};
 
 	TweetComponents.makeFooter = function (tweet){
+		var numberOfLikes = tweet.likes.length;
+		var $details = $('<p>').html(makeTimeStamp(tweet.created_at) + ' Likes: ');
+				$details.append($('<span>').text(numberOfLikes));
+
 		// icon class names from fontAwesome
 		var icons = ['fa-flag', 'fa-retweet', 'fa-heart'];
 		var $iconsSection = $('<section>').addClass('icons');
-		var likes = tweet.likes.length;
-		// Meta information:
-		var $details = $('<p>').html(makeTimeStamp(tweet.created_at) + ' Likes: ');
-				$details.append($('<span>').text(likes));
 
-		// AppendS icons to the iconsSection
 		icons.forEach(function(icon){
 			var iconAttributes = {
 				class: 'fa ' + icon,

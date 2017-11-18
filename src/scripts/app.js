@@ -1,9 +1,5 @@
-// importing functions and assigning them
 var timeOfLastLoad = Date.now();
-var composerCharCounter = require('./utils/composer-char-counter');
-
-var countCharacters = composerCharCounter.countCharacters;
-var keyupanddown = composerCharCounter.keyupanddown;
+var ComposerCharCounter = require('./utils/composer-char-counter');
 
 /**
  * Generate an error message label to be appended to the tweet composer form
@@ -21,56 +17,46 @@ function generateTweetErrorMessage(message){
 }
 
 /**
- * Check if argument tweet was created after the last time tweets were loaded.
- * @param  {object} tweet   An individual tweet object from an array of tweets.
- * @return {boolean}        A coerced truthy of falsey value depending on when the tweet was created
- */
-function checkIfNewTweet(tweet){
-  return tweet.created_at > timeOfLastLoad;
-}
-
-/**
  * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
  * @param  {array} tweets   An array of tweet objects
  *
  */
 function renderTweets(tweets, TweetComponents){
   tweets.forEach(function(tweet){
-    // prepend to show 'newest first', from tweet-creation-helpers
     var $tweet = $('<article>').addClass('tweet');
     var $main = $('<main>').append($('<p>').text(tweet.content.text));
     $tweet.append(TweetComponents.makeHeader(tweet.user))
-                 .append($main)
-                 .append(TweetComponents.makeFooter(tweet));
-    console.log($tweet);
+          .append($main)
+          .append(TweetComponents.makeFooter(tweet));
+    // prepend to show 'newest first'
     $('#tweets-container').prepend($tweet);
-  })
+  });
 }
 
 
 /**Load up tweets with AJAX.*/
-function loadTweets(){
-  $.ajax({
-    url: '/tweets',
-    method: 'GET'
-  }).done(function(data){
-    console.log(data);
-    var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
-    var tweetData = data.tweets;
-    // only render new tweets if this isn't the first time running are new tweets.
-    if(newTweetsOnly.length){
-      tweetData = newTweetsOnly;
-    }
+function initializeApp(appTasks){
+  $.getJSON('/tweets', function(data) {
     var TweetComponents = require('./utils/tweet-components')(data.user);
-    renderTweets(tweetData, TweetComponents);
+    var tweetData = data.tweets;
+    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
+    // set the time of last loast to now
     timeOfLastLoad = Date.now();
+
+    // only render new tweets.
+    if(newTweetsOnly.length){
+      renderTweets(newTweetsOnly, TweetComponents);
+      return;
+    }
+    
+    renderTweets(tweetData, TweetComponents);
+    appTasks(data.user);
   });
 }
 
 
 /**
  * Provides an error message if the form is invalid. Else submits the form via AJAX and loads up the new tweets.
- * @param  {object} event  The event object passed by the event listener.
  *
  */
 function formSubmissionHandler(event){
@@ -88,8 +74,7 @@ function formSubmissionHandler(event){
     return;
   }
   
-  // Make ajax call
-  $.ajax({
+  var ajaxOptions = {
     url: '/tweets',
     method: 'POST',
     data: $tweetComposer.serialize(),
@@ -97,40 +82,61 @@ function formSubmissionHandler(event){
       // if there is a warning label, remove it
       $('.new-tweet form label.red-text').remove();
     }
-  }).done(function(err){
-      // if an error message is received
-      if(err){
-        generateTweetErrorMessage(err);
-        return;
-      }
-      // clear tweet composer (reset it)
-      $('.new-tweet form textarea').val('');
-      loadTweets();
-    });
+  };
+
+  // Make ajax call
+  $.ajax(ajaxOptions).done(function(err){
+    if(err){
+      generateTweetErrorMessage(err);
+      return;
+    }
+    // clear tweet composer (reset it)
+    $('.new-tweet form textarea').val('');
+    loadTweets();
+  });
 }
 
 /** Initialization */
 $(function(){
-  loadTweets();
+  initializeApp(function(USER_DATA){
+    var $composerTextArea = $('#composer');
+    var $tweetForm = $('.new-tweet form');
+    var $logInForm = $('#loginForm');
+    // buttons
+    var $composerButton = $('#composeButton');
+    var $logInButton = $('#loginButton');
+    var $logOutButton = $('#logoutButton');
+    var $registerLink = $('a.register-link');
+    var $loginLink = $('a.login-link');
 
-  var $composerTextArea = $('#composer');
-  var $form = $('.new-tweet form');
-  var $composerButton = $('#compose');
-  var $loginButton = $('#login');
-  console.log($loginButton);
-  
-  // handles form submission
-  $form.submit(formSubmissionHandler);
 
-  // Toggle form field to slide down then focus on the composer
-  $composerButton.click(function(){
-    $('.new-tweet').slideToggle();
-    $('.new-tweet form textarea').focus();
+    if(USER_DATA){
+      $('.container').prepend($('<h2>').text('Welcome, ' + USER_DATA.handle));
+      $logInButton.addClass('hide');
+      $logOutButton.removeClass('hide');
+    }
+    
+    // Form submission events
+    $tweetForm.submit(formSubmissionHandler);
+    // button events
+    $composerButton.click(function(){
+      $('.new-tweet').slideToggle();
+      $('.new-tweet form textarea').focus();
+    });
+    $logInButton.click(function(event){
+      event.preventDefault();
+      $('#nav-bar .nav-login').toggleClass('hide');
+    });
+    $registerLink.click(function(event){
+      event.preventDefault();
+      $('#loginForm').toggleClass('hide');
+    });
+    $loginLink.click(function(event){
+      event.preventDefault();
+      $('#loginForm').toggleClass('hide');
+    })
+
+    // character counting
+    ComposerCharCounter.keyupanddown($composerTextArea);
   });
-  $loginButton.click(function(){
-    $('#nav-bar .nav-login').toggleClass('hide');
-  });
-
-  // character counting
-  keyupanddown($composerTextArea, countCharacters);
 });
