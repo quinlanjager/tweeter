@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Newton",
+    "avatars": {
+      "small":   "https://vanillicon.com/788e533873e80d2002fa14e1412b4188_50.png",
+      "regular": "https://vanillicon.com/788e533873e80d2002fa14e1412b4188.png",
+      "large":   "https://vanillicon.com/788e533873e80d2002fa14e1412b4188_200.png"
+    },
+    "handle": "@SirIsaac",
+    "password": "$2a$10$eoTTKECxTGR3R1L5sUIT.ORmUqhtZg4K/QOtndzSgLGKcjsBldQeq"
+  }
+]

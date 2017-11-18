@@ -10,13 +10,18 @@ const MongoClient 	 = require("mongodb").MongoClient;
 const sassMiddleware = require("node-sass-middleware");
 const path           = require("path");
 const cookieParser   = require("cookie-parser");
+const session        = require("express-session");
+const bcrypt         = require("bcrypt");
 const MONGODB_URI 	 = "mongodb://localhost:27017/tweeter";
 
 app.use(cookieParser());
+
+// handle the sass
 app.use('/styles', sassMiddleware({
 	src: path.join( __dirname, '..', '/src', '/styles'),
 	dest: path.join(__dirname, '..', '/public', '/styles')
 }));
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
