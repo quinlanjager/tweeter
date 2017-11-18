@@ -58,20 +58,20 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 		const { password, name } = req.body
 		const id = userHelper.generateRandomId();
 		const handle = `@${req.body.handle}`;
-		db.collection('users').find().toArray((err, users) => {
-			for(let user of users){
-				if(user.handle === handle){
-					res.send(`<label>A user with this handle already exists</label>`)	
+		db.collection('users').findOne({'handle': handle}, (err, user) => {
+			// verify that there is no user with this handle
+			if(user){
+				res.send(`<label>A user with this handle already exists</label>`)	
 					return;
-				}
 			}
+			const avatarUrlPrefix = `https://vanillicon.com/${md5(handle)}`;
+			const avatars = {
+    		small:   `${avatarUrlPrefix}_50.png`,
+    		regular: `${avatarUrlPrefix}.png`,
+    		large:   `${avatarUrlPrefix}_200.png`
+  		};
+			// make the password
 			bcrypt.hash(password, 10, (err, password) => {
-				const avatarUrlPrefix = `https://vanillicon.com/${md5(handle)}`;
-				const avatars = {
-      		small:   `${avatarUrlPrefix}_50.png`,
-      		regular: `${avatarUrlPrefix}.png`,
-      		large:   `${avatarUrlPrefix}_200.png`
-    		};
 				const user = {
 					id,
 					name,
@@ -91,41 +91,39 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 		});
 	});
 
+	// login handling
 	app.post("/login", (req, res) => {
 		const { password } = req.body;
 		const handle = `@${req.body.handle}`
-		getCollectionAsArray('users', (err, users) => {
-			for(let user of users){
-				if(user.handle === handle){
-					bcrypt.compare(password, user.password, (err, result) => {
-						if(err){
-							console.log(err);
-							return;
-						}
-						if(result){
-							req.session.user_id = user.id;
-							res.redirect('/');
-							return;
-						}
-						res.send('<label>Your handle or password could not be found</label>');
-					});
+		db.collection('users').findOne({'handle': handle}, (err, user) => {
+			if(err){
+				console.log(err);
+				return;
+			}
+			if(!user){
+				res.send('<label>Your handle or password could not be found</label>');
+				return;
+			}
+			bcrypt.compare(password, user.password, (err, result) => {
+				if(err){
+					console.log(err);
 					return;
 				}
-			}
-			res.send('<label>Your handle or password could not be found</label>');
+				if(result){
+					req.session.user_id = user.id;
+					res.redirect('/');
+					return;
+				}
+				// add more appropriate error message
+				res.send('<label>Your handle or password could not be found</label>');
+			});
 		});
-	})
-
-	app.post("/logout", (req, res) => {
-		req.session.destroy(function(err) {
-  		// cannot access session here
-		})
-		res.redirect('/');
 	});
 
-	app.get('/loggedIn', (req, res) => {
-
-	})
+	app.post("/logout", (req, res) => {
+		req.session.destroy();
+		res.redirect('/');
+	});
 
 	app.listen(PORT, () => {
 	  console.log("Example app listening on port " + PORT);

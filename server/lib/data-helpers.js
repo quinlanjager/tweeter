@@ -63,7 +63,19 @@ module.exports = function makeDataHelpers(db) {
         }
         callback(user);
       });    
+    },
+
+    isUserTweet: function(id, callback){
+      let tweetId = new ObjectID(id);
+      db.collection('tweets').findOne({_id: tweetId}, (err, tweet) => {
+        if(err){
+          console.log(err);
+          return;
+        }
+        callback(tweet);
+      })
     }
+
   }
 };
 

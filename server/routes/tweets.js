@@ -57,7 +57,16 @@ module.exports = function(DataHelpers) {
       res.send('You must be logged in to like a tweet.');
       return;
     }
-    DataHelpers.like(tweetID, req.session.user_id);
+    DataHelpers.getUser(req.session.user_id, (user) => {
+      DataHelpers.isUserTweet(tweetID, (tweet) => {
+        console.log(tweet);
+        if(tweet.user.handle === user.handle){
+          res.send('You can\'t like your own tweet.');
+          return;
+        }
+        DataHelpers.like(tweetID, req.session.user_id);
+      });
+    })
   });
 
   tweetsRoutes.delete("/:tweetID", function(req, res) {

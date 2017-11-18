@@ -257,7 +257,7 @@ function iconClickHandler(tweetData, $icon){
 				$likes.text(likesNumber);
 				$icon.toggleClass('red-text');
 				$icon.removeData('liked', true);
-				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(result);
+				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(err);
 			}
 			// close connection here.
 		});
