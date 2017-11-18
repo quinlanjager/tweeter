@@ -36,27 +36,25 @@ app.use(express.static("public"));
 
 MongoClient.connect(MONGODB_URI, (err, db) => {
 
-	function getCollectionAsArray(collectionName, callback){
-		db.collection(collectionName).find().toArray(callback);
-	}
-	
 	if(err){
 		console.log(err);
 		throw err;
 	}
 	console.log('Connected to', MONGODB_URI);
-	const DataHelpers = require("./lib/data-helpers.js")(db);
-	
-	// The `tweets-routes` module works similarly: we pass it the `DataHelpers` object
-	// so it can define routes that use it to interact with the data layer.
+
+	const DataHelpers = require("./lib/data-helpers.js")(db);	
 	const tweetsRoutes = require("./routes/tweets")(DataHelpers);
 
 	// Mount the tweets routes at the "/tweets" path prefix:
 	app.use("/tweets", tweetsRoutes);
 
+	/**
+	 * Tweeter registration function.
+	 */
 	app.post("/register", (req, res) => {
 		const { password, name } = req.body
-		const id = userHelper.generateRandomId();
+		// random userID to easily pass around.
+		const id = userHelper.generateRandomId(); 
 		const handle = `@${req.body.handle}`;
 		db.collection('users').findOne({'handle': handle}, (err, user) => {
 			// verify that there is no user with this handle

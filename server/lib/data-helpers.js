@@ -26,9 +26,9 @@ module.exports = function makeDataHelpers(db) {
     },
 
     // add a like
-    like: function(id, userID){
+    like: function(id, user_handle){
       let tweetId = new ObjectID(id);
-      db.collection('tweets').updateOne({_id: tweetId}, {$addToSet: {likes: userID}}, (err, cResult) => {
+      db.collection('tweets').updateOne({_id: tweetId}, {$addToSet: {likes: user_handle}}, (err, cResult) => {
         if(err){
           console.log(err);
           return;
@@ -56,6 +56,7 @@ module.exports = function makeDataHelpers(db) {
     getUser: function(user_id, callback){
       db.collection('users').findOne({"id": user_id}, (err, doc) => {
         const {name, handle, avatars} = doc;
+        // remove sensitive info
         let user = {
           name,
           handle,

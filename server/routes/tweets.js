@@ -14,10 +14,12 @@ module.exports = function(DataHelpers) {
         res.status(500).json({ error: err.message });
       } else {
         if(req.session.user_id){
-          res.json({loggedIn: true, tweets});
+          DataHelpers.getUser(req.session.user_id, (user) => {
+            res.json({user, tweets});
+          })
           return;
         }
-        res.json({loggedIn: false, tweets});
+        res.json({user: null, tweets});
       }
     });
   });
@@ -58,14 +60,7 @@ module.exports = function(DataHelpers) {
       return;
     }
     DataHelpers.getUser(req.session.user_id, (user) => {
-      DataHelpers.isUserTweet(tweetID, (tweet) => {
-        console.log(tweet);
-        if(tweet.user.handle === user.handle){
-          res.send('You can\'t like your own tweet.');
-          return;
-        }
-        DataHelpers.like(tweetID, req.session.user_id);
-      });
+      DataHelpers.like(tweetID, user.handle);
     })
   });
 
