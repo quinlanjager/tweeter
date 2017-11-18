@@ -39,6 +39,9 @@ body {
 .red-text {
   color: red; }
 
+.hide {
+  display: none; }
+
 @media (min-width: 2300px) {
   body {
     font-size: 32px; }

@@ -2,6 +2,7 @@
 
 const userHelper    = require("../lib/util/user-helper");
 
+
 const express       = require('express');
 const tweetsRoutes  = express.Router();
 
@@ -12,7 +13,11 @@ module.exports = function(DataHelpers) {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        res.json(tweets);
+        if(req.session.user_id){
+          res.json({loggedIn: true, tweets});
+          return;
+        }
+        res.json({loggedIn: false, tweets});
       }
     });
   });
@@ -20,6 +25,10 @@ module.exports = function(DataHelpers) {
   tweetsRoutes.post("/", function(req, res) {
     if (!req.body.text) {
       res.status(400).json({ error: 'invalid request: no data in POST body'});
+      return;
+    }
+    if(!req.session.user_id){
+      res.send('You must be logged in to post a tweet.');
       return;
     }
 
@@ -45,12 +54,20 @@ module.exports = function(DataHelpers) {
 
   tweetsRoutes.put("/:tweetID", function(req, res) {
     const {tweetID} = req.params;
-    DataHelpers.like(tweetID, req.session.id);
+    if(!req.session.user_id){
+      res.send('You must be logged in to like a tweet.');
+      return;
+    }
+    DataHelpers.like(tweetID, req.session.user_id);
   });
 
   tweetsRoutes.delete("/:tweetID", function(req, res) {
     const {tweetID} = req.params;
-    DataHelpers.unlike(tweetID, req.session.id);
+    if(!req.session.user_id){
+      res.send('You must be logged in to do this.');
+      return;
+    }
+    DataHelpers.unlike(tweetID, req.session.user_id);
   });
 
   return tweetsRoutes;

@@ -60,12 +60,11 @@ function iconClickHandler(tweetData, $icon){
 	return function(event){
 		//isolate the click event
 		event.stopPropagation();
-		$icon.toggleClass('red-text');
-
 		var $likes = $icon.closest('footer').find('p span');
+		var likesNumber = tweetData.likes.length;
 		// if the tweet is already liked
 		if($icon.data('liked') === true){
-			$likes.text(Number($likes.text()) - 1);
+			$likes.text(likesNumber);
 			$.ajax({
 				url: '/tweets/' + tweetData._id,
 				method: 'DELETE'
@@ -73,12 +72,19 @@ function iconClickHandler(tweetData, $icon){
 			$icon.removeData('liked');
 			return;
 		}
-
-		$icon.data('liked', true);
-		$likes.text(Number($likes.text()) + 1);
+			$icon.toggleClass('red-text');
+			$icon.data('liked', true);
+			$likes.text(likesNumber + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
+		}).done((result) => {
+			if(result){
+				$likes.text(likesNumber);
+				$icon.toggleClass('red-text');
+				$icon.removeData('liked', true);
+				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(result);
+			}
 		});
 	};
 }

@@ -1,7 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // importing functions and assigning them
+var timeOfLastLoad = Date.now();
 var composerCharCounter = require('./composer-char-counter');
 var tweetCreationHelpers = require('./tweet-creation-helpers');
+var loginFormHandler = require('./login-form-handler');
+
 
 var countCharacters = composerCharCounter.countCharacters;
 var keyupanddown = composerCharCounter.keyupanddown;
@@ -14,7 +17,6 @@ var makeFooter = tweetCreationHelpers.makeFooter;
 var compileTweetElement = tweetCreationHelpers.compileTweetElement;
 
 $(function(){
-  var timeOfLastLoad = Date.now();
 
   /**
    * Generate an error message label to be appended to the tweet composer form
@@ -61,11 +63,16 @@ $(function(){
       url: '/tweets',
       method: 'GET'
     }).done(function(data){
-      var newData = data.filter(checkIfNewTweet);
-      var tweetData = data;
+      if(data.loggedIn){
+        loggedIn = true;
+      } else {
+        $('#nav-bar .nav-login').removeClass('hide');
+      }
+      var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
+      var tweetData = data.tweets;
       // only render new tweets if this isn't the first time running are new tweets.
-      if(newData.length){
-        tweetData = newData;
+      if(newTweetsOnly.length){
+        tweetData = newTweetsOnly;
       }
       renderTweets(tweetData);
       timeOfLastLoad = Date.now();
@@ -126,7 +133,7 @@ $(function(){
   // character counting
   keyupanddown($composerTextArea, countCharacters);
 });
-},{"./composer-char-counter":2,"./tweet-creation-helpers":3}],2:[function(require,module,exports){
+},{"./composer-char-counter":2,"./login-form-handler":3,"./tweet-creation-helpers":4}],2:[function(require,module,exports){
 /**
  * Count the characters of the tweet composer
  * @param  {object} event The event object from the listener that triggered the calculation
@@ -163,6 +170,8 @@ module.exports = {
 	keyupanddown: keyupanddown
 };
 },{}],3:[function(require,module,exports){
+
+},{}],4:[function(require,module,exports){
 /**
  * Tweet creation functions.
  */
@@ -225,12 +234,11 @@ function iconClickHandler(tweetData, $icon){
 	return function(event){
 		//isolate the click event
 		event.stopPropagation();
-		$icon.toggleClass('red-text');
-
 		var $likes = $icon.closest('footer').find('p span');
+		var likesNumber = tweetData.likes.length;
 		// if the tweet is already liked
 		if($icon.data('liked') === true){
-			$likes.text(Number($likes.text()) - 1);
+			$likes.text(likesNumber);
 			$.ajax({
 				url: '/tweets/' + tweetData._id,
 				method: 'DELETE'
@@ -238,12 +246,19 @@ function iconClickHandler(tweetData, $icon){
 			$icon.removeData('liked');
 			return;
 		}
-
-		$icon.data('liked', true);
-		$likes.text(Number($likes.text()) + 1);
+			$icon.toggleClass('red-text');
+			$icon.data('liked', true);
+			$likes.text(likesNumber + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
+		}).done((result) => {
+			if(result){
+				$likes.text(likesNumber);
+				$icon.toggleClass('red-text');
+				$icon.removeData('liked', true);
+				$icon.closest('footer').find('p').append('<span>').addClass('red-text').text(result);
+			}
 		});
 	};
 }

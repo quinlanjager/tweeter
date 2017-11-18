@@ -120,6 +120,17 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 		});
 	})
 
+	app.post("/logout", (req, res) => {
+		req.session.destroy(function(err) {
+  		// cannot access session here
+		})
+		res.redirect('/');
+	});
+
+	app.get('/loggedIn', (req, res) => {
+
+	})
+
 	app.listen(PORT, () => {
 	  console.log("Example app listening on port " + PORT);
 	});

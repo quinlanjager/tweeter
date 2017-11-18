@@ -29,10 +29,10 @@
         <img class="logo" src="/images/bird.png">
         <span class="header">Tweeter</span>
       </section>
-      <section class="nav-buttons">
+      <section class="nav-buttons hide">
         <button>Compose</button>
       </section>
-      <section class="nav-login">
+      <section class="nav-login hide">
         <form id="register" action="/register" method="POST">
           <label>Register</label>
           <input type="text" name="name" placeholder="name">
@@ -47,6 +47,9 @@
           <button>login</button>
         </form>
       </section>
+      <form id="logout" action="/logout" method="POST">
+        <button>logout</button>
+      </form>
     </nav>
 
     <!-- Page-specific (main) content here -->

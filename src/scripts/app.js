@@ -1,4 +1,5 @@
 // importing functions and assigning them
+var timeOfLastLoad = Date.now();
 var composerCharCounter = require('./composer-char-counter');
 var tweetCreationHelpers = require('./tweet-creation-helpers');
 var loginFormHandler = require('./login-form-handler');
@@ -15,7 +16,6 @@ var makeFooter = tweetCreationHelpers.makeFooter;
 var compileTweetElement = tweetCreationHelpers.compileTweetElement;
 
 $(function(){
-  var timeOfLastLoad = Date.now();
 
   /**
    * Generate an error message label to be appended to the tweet composer form
@@ -62,11 +62,16 @@ $(function(){
       url: '/tweets',
       method: 'GET'
     }).done(function(data){
-      var newData = data.filter(checkIfNewTweet);
-      var tweetData = data;
+      if(data.loggedIn){
+        loggedIn = true;
+      } else {
+        $('#nav-bar .nav-login').removeClass('hide');
+      }
+      var newTweetsOnly = data.tweets.filter(checkIfNewTweet);
+      var tweetData = data.tweets;
       // only render new tweets if this isn't the first time running are new tweets.
-      if(newData.length){
-        tweetData = newData;
+      if(newTweetsOnly.length){
+        tweetData = newTweetsOnly;
       }
       renderTweets(tweetData);
       timeOfLastLoad = Date.now();
