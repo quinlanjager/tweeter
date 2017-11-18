@@ -29,27 +29,30 @@
         <img class="logo" src="/images/bird.png">
         <span class="header">Tweeter</span>
       </section>
-      <section class="nav-buttons">
-        <button id="compose">Compose</button>
-        <button id="login">Login</button>
-      </section>
-      <section class="nav-login hide">
+      <section class="nav-login">
+        <button class="close">x</button>
         <form id="register" action="/register" method="POST">
-          <label>Register</label>
+          <h4>Register</h4>
           <input type="text" name="name" placeholder="name">
           <input type="text" name="handle" placeholder="handle">
           <input type="password" name="password" placeholder="password">
           <button>Register</button>
         </form>
-         <form id="login" action="/login" method="POST">
-          <label>login</label>
+         <form id="loginForm" action="/login" method="POST">
+          <label><strong>Login</strong></label>
           <input type="text" name="handle" placeholder="handle">
           <input type="password" name="password" placeholder="password">
-          <button>login</button>
+          <button>login</button> 
+          <p>Don't have an account? <a href="#" class='register-link'>Register</a></p>
         </form>
       </section>
+      <section class="nav-buttons">
+        <button id="compose">Compose</button>
+        <button id="login">Login</button>
+        <button form="logout">logout</button>
+      </section>
       <form id="logout" action="/logout" method="POST">
-        <button>logout</button>
+        
       </form>
     </nav>
 

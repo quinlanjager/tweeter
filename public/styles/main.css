@@ -40,7 +40,8 @@ body {
   color: red; }
 
 .hide {
-  display: none; }
+  display: none;
+  width: 0px; }
 
 @media (min-width: 2300px) {
   body {
@@ -63,8 +64,6 @@ body {
 #nav-bar {
   background-color: #00a087;
   color: #e8fdff;
-  display: flex;
-  justify-content: space-between;
   min-width: 360px;
   position: fixed;
   padding: 0 2em;
@@ -82,9 +81,54 @@ body {
     font-size: 2em;
     line-height: 2.5;
     margin-left: 10px; }
-  #nav-bar .nav-buttons button {
-    position: relative;
-    top: 25px; }
+  #nav-bar .nav-buttons {
+    float: right; }
+    #nav-bar .nav-buttons button {
+      position: relative;
+      top: 25px; }
+  #nav-bar .nav-login {
+    background-color: #00a087;
+    position: fixed;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 500px;
+    height: 270px;
+    overflow: hidden;
+    border-radius: 6px; }
+    #nav-bar .nav-login button.close {
+      position: relative;
+      cursor: pointer;
+      color: white;
+      background-color: #00a087;
+      font-size: 24px;
+      z-index: 100;
+      margin: 12px;
+      border: none;
+      width: 24px;
+      height: 24px; }
+    #nav-bar .nav-login form {
+      background-color: #00a087;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      text-align: center; }
+      #nav-bar .nav-login form#login {
+        z-index: 99; }
+      #nav-bar .nav-login form input {
+        margin: 16px auto;
+        display: block;
+        padding: 4px; }
+      #nav-bar .nav-login form label {
+        margin: 8px auto;
+        display: block;
+        text-align: center; }
+      #nav-bar .nav-login form button {
+        cursor: pointer;
+        margin: 8px auto;
+        display: block; }
 
 @media (min-width: 2300px) {
   #nav-bar {

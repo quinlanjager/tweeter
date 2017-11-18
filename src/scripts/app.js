@@ -115,7 +115,9 @@ $(function(){
 
   var $composerTextArea = $('#composer');
   var $form = $('.new-tweet form');
-  var $composerButton = $('#nav-bar .nav-buttons button');
+  var $composerButton = $('#compose');
+  var $loginButton = $('#login');
+  console.log($loginButton);
   
   // handles form submission
   $form.submit(formSubmissionHandler);
@@ -124,6 +126,9 @@ $(function(){
   $composerButton.click(function(){
     $('.new-tweet').slideToggle();
     $('.new-tweet form textarea').focus();
+  });
+  $loginButton.click(function(){
+    $('#nav-bar .nav-login').toggleClass('hide');
   });
 
   // character counting
