@@ -7,6 +7,17 @@ const md5 = require('md5');
 
 module.exports = {
 
+  generateRandomId: () => {
+    let resultString = '';
+    let characters = 'abcdefhijklmnopqrstuvwxyz';
+    characters += characters.toUpperCase() + '1234567890';
+    while(resultString.length < 6){
+      const charIndex = Math.floor(Math.random() * characters.length);
+      resultString += characters[charIndex];
+    }
+    return resultString;
+  },
+  
   generateRandomUser: () => {
     const gender    = chance.gender();
     const firstName = chance.first({gender: gender});

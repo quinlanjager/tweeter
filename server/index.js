@@ -3,21 +3,25 @@
 // Basic express setup:
 
 const PORT           = 8080;
+const userHelper     = require('./lib/util/user-helper')
 const express        = require("express");
 const bodyParser     = require("body-parser");
 const app            = express();
 const MongoClient 	 = require("mongodb").MongoClient;
 const sassMiddleware = require("node-sass-middleware");
 const path           = require("path");
-const cookieParser   = require("cookie-parser");
 const session        = require("express-session");
 const bcrypt         = require("bcrypt");
-const md5 = require('md5');
+const md5            = require('md5');
 
 const MONGODB_URI 	 = "mongodb://localhost:27017/tweeter";
 const saltRound      = 10;
 
-app.use(cookieParser());
+app.use(session({ 
+		secret: 'cookie monster',
+		saveUninitialized: false,
+		resave: false
+	}));
 
 // handle the sass
 app.use('/styles', sassMiddleware({
@@ -28,7 +32,14 @@ app.use('/styles', sassMiddleware({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+
+
 MongoClient.connect(MONGODB_URI, (err, db) => {
+
+	function getCollectionAsArray(collectionName, callback){
+		db.collection(collectionName).find().toArray(callback);
+	}
+	
 	if(err){
 		console.log(err);
 		throw err;
@@ -45,18 +56,16 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 
 	app.post("/register", (req, res) => {
 		const { password, name } = req.body
+		const id = userHelper.generateRandomId();
 		const handle = `@${req.body.handle}`;
 		db.collection('users').find().toArray((err, users) => {
-			console.log(users);
 			for(let user of users){
-				console.log(user);
 				if(user.handle === handle){
 					res.send(`<label>A user with this handle already exists</label>`)	
 					return;
 				}
 			}
 			bcrypt.hash(password, 10, (err, password) => {
-				console.log(password);
 				const avatarUrlPrefix = `https://vanillicon.com/${md5(handle)}`;
 				const avatars = {
       		small:   `${avatarUrlPrefix}_50.png`,
@@ -64,17 +73,52 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
       		large:   `${avatarUrlPrefix}_200.png`
     		};
 				const user = {
+					id,
 					name,
 					avatars,
 					handle,
 					password
 				};
-				db.collection('users').insert(user, () => {
-					res.send(`<label>You've successfully registered</label>`);
+				db.collection('users').insert(user, (err) => {
+					if(err){
+						console.log(err);
+						return;
+					}
+					console.log(req.session);
+					req.session.user_id = id;
+					res.redirect('/');
 				});
 			});
 		});
 	});
+
+	app.post("/login", (req, res) => {
+		const { password } = req.body;
+		const handle = `@${req.body.handle}`
+		console.log(handle);
+		getCollectionAsArray('users', (err, users) => {
+			for(let user of users){
+				if(user.handle === handle){
+					console.log('handle found');
+					bcrypt.compare(password, user.password, (err, result) => {
+						if(err){
+							console.log(err);
+							return;
+						}
+						console.log(result);
+						if(result){
+							req.session.user_id = user.id;
+							res.redirect('/');
+							return;
+						}
+						res.send('<label>Your handle or password could not be found</label>');
+					});
+					return;
+				}
+			}
+			res.send('<label>Your handle or password could not be found</label>');
+		});
+	})
 
 	app.listen(PORT, () => {
 	  console.log("Example app listening on port " + PORT);

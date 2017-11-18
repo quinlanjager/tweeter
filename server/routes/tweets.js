@@ -12,9 +12,6 @@ module.exports = function(DataHelpers) {
       if (err) {
         res.status(500).json({ error: err.message });
       } else {
-        if(!req.cookies.userID){
-          res.cookie('userID', userHelper.generateRandomUser().handle);
-        }
         res.json(tweets);
       }
     });
@@ -48,12 +45,12 @@ module.exports = function(DataHelpers) {
 
   tweetsRoutes.put("/:tweetID", function(req, res) {
     const {tweetID} = req.params;
-    DataHelpers.like(tweetID, req.cookies.userID);
+    DataHelpers.like(tweetID, req.session.id);
   });
 
   tweetsRoutes.delete("/:tweetID", function(req, res) {
     const {tweetID} = req.params;
-    DataHelpers.unlike(tweetID, req.cookies.userID);
+    DataHelpers.unlike(tweetID, req.session.id);
   });
 
   return tweetsRoutes;

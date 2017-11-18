@@ -33,11 +33,18 @@
         <button>Compose</button>
       </section>
       <section class="nav-login">
-        <form id="login" action="/register" method="POST">
+        <form id="register" action="/register" method="POST">
+          <label>Register</label>
           <input type="text" name="name" placeholder="name">
           <input type="text" name="handle" placeholder="handle">
           <input type="password" name="password" placeholder="password">
           <button>Register</button>
+        </form>
+         <form id="login" action="/login" method="POST">
+          <label>login</label>
+          <input type="text" name="handle" placeholder="handle">
+          <input type="password" name="password" placeholder="password">
+          <button>login</button>
         </form>
       </section>
     </nav>
