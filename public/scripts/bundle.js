@@ -230,18 +230,17 @@ function iconClickHandler(tweetData, $icon){
 		var $likes = $icon.closest('footer').find('p span');
 		// if the tweet is already liked
 		if($icon.data('liked') === true){
-			$likes.text(tweetData.likes.length);
+			$likes.text(Number($likes.text()) - 1);
 			$.ajax({
 				url: '/tweets/' + tweetData._id,
-				method: 'PUT'
+				method: 'DELETE'
 			});
 			$icon.removeData('liked');
 			return;
 		}
 
 		$icon.data('liked', true);
-		console.log(document.querySelector('.fa-heart').getAttribute('data-liked'));
-		$likes.text(Number(tweetData.likes.length) + 1);
+		$likes.text(Number($likes.text()) + 1);
 		$.ajax({
 			url: '/tweets/' + tweetData._id,
 			method: 'PUT'
@@ -250,10 +249,43 @@ function iconClickHandler(tweetData, $icon){
 }
 
 /**
+ * Handles adding functionality to the heart icon.
+ * @param  {object} $icon  jQuery object representing the icon object. 
+ * @param  {object} tweetData An object representing the tweet.     
+ */
+function addHeartClickHandler($icon, tweetData){
+	var cookieSlicePoint = document.cookie.indexOf('=') + 1;
+	var userID = document.cookie.slice(cookieSlicePoint);
+	tweetData.likes.forEach(function(liker){
+		if(decodeURIComponent(userID) === liker){
+			$icon.data('liked', true);
+			$icon.toggleClass('red-text');
+		}
+	});
+	$icon.click(iconClickHandler(tweetData, $icon));
+}
+
+/**
+ * Handles making the icons for the tweet footer.
+ * @param  {string} icon 	a string representing the icon name.
+ * @return {object}       returns a jQuery element object.
+ */
+function makeIcon(icon, tweetData){
+	var iconAttributes = {
+		class: 'fa ' + icon,
+		'aria-hidden': 'true'
+	};
+	var $iconElt = $('<i>').attr(iconAttributes);
+	if(icon === 'fa-heart'){
+		addHeartClickHandler($iconElt, tweetData);
+	}
+	return $iconElt;
+}
+
+/**
  * Build the tweet footer
  * @param  {number} timeTweetCreated [The date in milliseconds the tweet was created]
  * @return {object}      			 [Returns a jQuery object containing a completed footer.]
- *
  */
 function makeFooter(tweetData){
 	// icon class names from fontAwesome
@@ -266,16 +298,7 @@ function makeFooter(tweetData){
 
 	// Append icons to the iconsSection
 	icons.forEach(function(icon){
-		var iconAttributes = {
-			class: 'fa ' + icon,
-			'aria-hidden': 'true'
-		};
-		var $iconElt = $('<i>').attr(iconAttributes);
-		// Add click handler to the heart icon
-		if(icon === 'fa-heart'){
-			$iconElt.click(iconClickHandler(tweetData, $iconElt));
-		}
-		$iconsSection.append($iconElt);
+		$iconsSection.append(makeIcon(icon, tweetData));
 	});
 
 	return $('<footer>').append($details)

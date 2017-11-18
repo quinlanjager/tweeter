@@ -26,17 +26,32 @@ module.exports = function makeDataHelpers(db) {
     },
 
     // add a like
-    addLikeTo: function(id, userID, callback){
+    like: function(id, userID){
       let tweetId = new ObjectID(id);
-      db.collection('tweets').updateOne({_id: tweetId}, {$addToSet: {likes : userID}}, (err, tweet) => {
+      db.collection('tweets').updateOne({_id: tweetId}, {$addToSet: {likes: userID}}, (err, cResult) => {
         if(err){
           console.log(err);
           return;
         }
-        db.collection('tweets').findOne({_id: tweetId}, (err, tweet) => {
-          callback(tweet);
-        })
-      })
+      });
+    },
+
+    unlike: function(id, userID){
+      let tweetId = new ObjectID(id);
+      db.collection('tweets').find({_id: tweetId}).toArray( (err, tweet) => {
+        let newLikes = tweet[0].likes.filter((liker) => {
+          if(liker !== userID){
+            return liker;
+          }
+        });
+        db.collection('tweets').updateOne({_id: tweetId}, {$set: {likes: newLikes}}, (err, result) => {
+          if(err){
+            console.log(err);
+            return;
+          }
+        });
+      });
     }
-  };
-}
+  }
+};
+
