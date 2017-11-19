@@ -99,7 +99,7 @@ module.exports = function(USER_DATA, TWEET_DATA){
 		return $header.append($('<img>').attr(imgAttributes))
 									.append($('<h3>').text(user.name))
 									.append($('<p>').text(user.handle));
-	};
+	}
 
 	function makeFooter (tweet){
 		var numberOfLikes = tweet.likes.length;
@@ -125,7 +125,7 @@ module.exports = function(USER_DATA, TWEET_DATA){
 
 		return $('<footer>').append($details)
 												.append($iconsSection);
-	};
+	}
 
 	//build the tweet with the following:
   TWEET_DATA.forEach(function(tweet){

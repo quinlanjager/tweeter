@@ -3,7 +3,7 @@
  * @param  {object} event The event object from the listener that triggered the calculation
  *
  */
-function countCharacters(event){
+function countCharacters(){
 	var textArea = $(this);
 	var counter = textArea.nextAll('.counter');
 	var textAreaLength = textArea.val().length;

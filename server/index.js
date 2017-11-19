@@ -15,7 +15,7 @@ const bcrypt         = require("bcrypt");
 const md5            = require('md5');
 
 const MONGODB_URI 	 = "mongodb://localhost:27017/tweeter";
-const saltRound      = 10;
+const saltRounds     = 10;
 
 app.use(session({ 
 		secret: 'cookie monster',
@@ -35,7 +35,6 @@ app.use(express.static("public"));
 
 
 MongoClient.connect(MONGODB_URI, (err, db) => {
-
 	if(err){
 		console.log(err);
 		throw err;
@@ -69,7 +68,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
     		large:   `${avatarUrlPrefix}_200.png`
   		};
 			// make the password
-			bcrypt.hash(password, 10, (err, password) => {
+			bcrypt.hash(password, saltRounds, (err, password) => {
 				const user = {
 					id,
 					name,

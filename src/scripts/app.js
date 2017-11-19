@@ -54,6 +54,7 @@ $(function(){
         var $form = $(formId);
         var inputs = $form.find('input');
         var body = "";
+        // make body content by looping for input values
         for(var i = 0; i < inputs.length; i++){
           if(i === 0){
             body += $(inputs[i]).attr('name') + "=" + $(inputs[i]).val();
@@ -61,7 +62,6 @@ $(function(){
           }
           body += '&' + $(inputs[i]).attr('name') + '=' + $(inputs[i]).val();
         }
-        console.log(body);
         $.post($(this).attr('action'), encodeURI(body), function(result){
           if(result === 'OK'){
             location.reload(true);
