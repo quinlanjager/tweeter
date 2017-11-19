@@ -2,13 +2,9 @@
 var timeOfLastLoad = Date.now();
 var ComposerCharCounter = require('./utils/composer-char-counter');
 
-/**
- * Generate an error message label to be appended to the tweet composer form
- * @param  {string} message The message you'd like to communicate
- *
- */
+// Generate an error message label to be appended to the tweet composer form.
 function generateTweetErrorMessage(message){
-  // if label aready exists, just replace the text
+  // if label aready exists, just replace the text.
   var $errorLabel = $('.new-tweet form label');
   if($errorLabel.text().length){
     $errorLabel.text(message);
@@ -17,29 +13,12 @@ function generateTweetErrorMessage(message){
   }
 }
 
-/**
- * For each tweet in an array of tweet, generates a jQuery element object then prepends it to the tweet container.
- * @param  {array} tweets   An array of tweet objects
- *
- */
-function renderTweets(tweets, TweetComponents){
-  tweets.forEach(function(tweet){
-    var $tweet = $('<article>').addClass('tweet');
-    var $main = $('<main>').append($('<p>').text(tweet.content.text));
-    $tweet.append(TweetComponents.makeHeader(tweet.user))
-          .append($main)
-          .append(TweetComponents.makeFooter(tweet));
-    // prepend to show 'newest first'
-    $('#tweets-container').prepend($tweet);
-  });
-}
-
-/**Load up tweets with AJAX.*/
+// Load up tweets with AJAX.
 function initializeApp(appTasks){
   $.getJSON('/tweets', function(data) {
     var tweetData = data.tweets;
     var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
-    // set the time of last loast to now
+    // set the time of last load to now.
     timeOfLastLoad = Date.now();
 
     // only render new tweets.
@@ -51,76 +30,11 @@ function initializeApp(appTasks){
   });
 }
 
-function tweetFormSubmission(event){
-  event.preventDefault();
-  var $tweetComposer = $('.new-tweet form textarea');
-  var tweet = $tweetComposer.val();
-
-  // form validation
-  if(tweet.length === 0){
-    generateTweetErrorMessage('Please input text before submitting.');
-    return;
-  }
-  if(tweet.length > 140){
-    generateTweetErrorMessage('Sorry, your tweet is too long.');
-    return;
-  }
-  
-  var ajaxOptions = {
-    url: '/tweets',
-    method: 'POST',
-    data: $tweetComposer.serialize(),
-    beforeSend: function(){
-      // if there is a warning label, remove it
-      $('.new-tweet form label.red-text').remove();
-    }
-  };
-
-  // Make ajax call
-  $.ajax(ajaxOptions).done(function(err){
-    if(err){
-      generateTweetErrorMessage(err);
-      return;
-    }
-    // clear tweet composer (reset it)
-    $('.new-tweet form textarea').val('');
-    loadTweets();
-  });
-}
-
-
-/** Initialization */
+// Initialization
 $(function(){
-
-  function initializeFormHandlerOn(formId){
-  formId.submit(function(event){
-    event.preventDefault();
-    var $form = $(formId);
-    var inputs = $form.find('input');
-    var body = "";
-    for(var i = 0; i < inputs.length; i++){
-      if(i === 0){
-        body += $(inputs[i]).attr('name') + "=" + $(inputs[i]).val();
-        continue;
-      }
-      body += '&' + $(inputs[i]).attr('name') + '=' + $(inputs[i]).val();
-    }
-    console.log(body);
-    $.post($(this).attr('action'), encodeURI(body), function(result){
-      if(result === 'OK'){
-        location.reload(true);
-        return;
-      } 
-      // delete existing warning label
-      $form.find('label.red-text').remove();
-      var errorMessage = $('<label>').addClass('red-text').text(result);
-      $form.find('p').before(errorMessage);
-    });
-  })
-}
   initializeApp(function(USER_DATA, TWEET_DATA){
-
-    var TweetComponents = require('./utils/tweet-components')(USER_DATA);
+    // renderTweet helper
+    var renderTweets = require('./utils/render-tweets');
     
     var $composerTextArea = $('#composer');
     var $tweetForm = $('.new-tweet form');
@@ -134,34 +48,106 @@ $(function(){
     var $registerLink = $('a.register-link');
     var $loginLink = $('a.login-link');
 
+    // Registration/login form handler
+    function initializeFormHandlerOn(formId){
+      formId.submit(function(event){
+        event.preventDefault();
+        var $form = $(formId);
+        var inputs = $form.find('input');
+        var body = "";
+        for(var i = 0; i < inputs.length; i++){
+          if(i === 0){
+            body += $(inputs[i]).attr('name') + "=" + $(inputs[i]).val();
+            continue;
+          }
+          body += '&' + $(inputs[i]).attr('name') + '=' + $(inputs[i]).val();
+        }
+        console.log(body);
+        $.post($(this).attr('action'), encodeURI(body), function(result){
+          if(result === 'OK'){
+            location.reload(true);
+            return;
+          } 
+          // delete existing warning label
+          $form.find('label.red-text').remove();
+          var errorMessage = $('<label>').addClass('red-text').text(result);
+          $form.find('p').before(errorMessage);
+        });
+      })
+    }
+
+    // tweet submission form handler
+    function tweetFormSubmission(event){
+      event.preventDefault();
+      var $tweetComposer = $('.new-tweet form textarea');
+      var tweet = $tweetComposer.val();
+
+      // form validation
+      if(tweet.length === 0){
+        generateTweetErrorMessage('Please input text before submitting.');
+        return;
+      }
+      if(tweet.length > 140){
+        generateTweetErrorMessage('Sorry, your tweet is too long.');
+        return;
+      }
+  
+      var ajaxOptions = {
+        url: '/tweets',
+        method: 'POST',
+        data: $tweetComposer.serialize(),
+        beforeSend: function(){
+        // if there is a warning label, remove it
+        $('.new-tweet form label.red-text').remove();
+        }
+      };
+      // Make ajax call
+      $.ajax(ajaxOptions).done(function(err){
+        if(err){
+          generateTweetErrorMessage(err);
+          return;
+        }
+        // clear tweet composer (reset it)
+        $('.new-tweet form textarea').val('');
+        initializeApp(renderTweets);
+      });
+    }
+
+    // render initial batch of tweets
+    renderTweets(USER_DATA, TWEET_DATA);
+    
+    // Form submission events
     initializeFormHandlerOn($logInForm);
     initializeFormHandlerOn($registerForm);
+    $tweetForm.submit(tweetFormSubmission);
 
-
-    renderTweets(TWEET_DATA, TweetComponents);
-
+    // Changing interface if the user is logged in.
     if(USER_DATA){
       $('.container').prepend($('<h2>').text('Welcome, ' + USER_DATA.handle));
       $logInButton.addClass('hide');
       $logOutButton.removeClass('hide');
     }
-    
-    // Form submission events
-    $tweetForm.submit(tweetFormSubmission);
-    
+
     // button events
+    // 'Compose' button
     $composerButton.click(function(){
       $('.new-tweet').slideToggle();
       $('.new-tweet form textarea').focus();
     });
+
+    // 'Login' button
     $logInButton.click(function(event){
       event.preventDefault();
       $('#nav-bar .nav-login').toggleClass('hide');
     });
+
+    // 'Register now' link
     $registerLink.click(function(event){
       event.preventDefault();
       $('#loginForm').toggleClass('hide');
     });
+
+    // 'Already have an account? login' link
     $loginLink.click(function(event){
       event.preventDefault();
       $('#loginForm').toggleClass('hide');
@@ -171,7 +157,7 @@ $(function(){
     ComposerCharCounter.keyupanddown($composerTextArea);
   });
 });
-},{"./utils/composer-char-counter":2,"./utils/tweet-components":3}],2:[function(require,module,exports){
+},{"./utils/composer-char-counter":2,"./utils/render-tweets":3}],2:[function(require,module,exports){
 /**
  * Count the characters of the tweet composer
  * @param  {object} event The event object from the listener that triggered the calculation
@@ -207,9 +193,8 @@ module.exports = {
 	keyupanddown: keyupanddown,
 };
 },{}],3:[function(require,module,exports){
-	
-module.exports = function(user_data){
-	
+module.exports = function(USER_DATA, TWEET_DATA){
+
 	function addPadding (num){
 		var str = num.toString();
 		while(str.length !== 2){
@@ -218,32 +203,27 @@ module.exports = function(user_data){
 		return str;
 	}
 
-	/**
-	 * Checks if the tweet is liked by the currently logged in user.
-	 */
+	// Checks if the tweet is liked by the currently logged in user.
 	function likedByUser(tweet){
 		var liked = false;
 		tweet.likes.forEach(function(liker){
-			if(liker === user_data.handle){
+			if(liker === USER_DATA.handle){
 				liked = true;
 			}
 		});
 		return liked;
 	}
 
-	/**
-	 * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
-	 * @param  {object} $icon The jQuery object representing the icon we're changing.
-	*/
+	// Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
 	function iconClickHandler($heartIcon, tweet){
 		return function(event){
 			event.stopPropagation();
 			// error handling
-			if(!user_data){
+			if(!USER_DATA){
 				$heartIcon.closest('footer').find('p').addClass('red-text').text('You must be loggedIn to like tweets.');
 				return;
 			}
-			if(user_data.handle === tweet.user.handle){
+			if(USER_DATA.handle === tweet.user.handle){
 				$heartIcon.closest('footer').find('p').addClass('red-text').text('You can\'t like your own tweets');
 				return;
 			}
@@ -272,9 +252,7 @@ module.exports = function(user_data){
 		};
 	}
 
-	/**
-	 * Creates a time stamp based on how much time has passed since the last tweet.
-	 */
+	// Creates a time stamp based on how much time has passed since the last tweet.
 	function makeTimeStamp (timeTweetCreated){
 		var timeTweetCreatedDate = new Date(timeTweetCreated);
 		var currentDate = Date.now();
@@ -292,14 +270,11 @@ module.exports = function(user_data){
 	}
 
 
-	/**
-	 * A factory function for the heart icon.
-	 * 
-	 */
+	// A factory function for the heart icon.
 	function makeHeartIcon($heartIcon, tweet){
 		$heartIcon.click(iconClickHandler($heartIcon, tweet));
 		// if the tweet has been liked before, the heart will appear red on login.
-		if(user_data){
+		if(USER_DATA){
 			if(likedByUser(tweet)){
 				$heartIcon.toggleClass('red-text');
 				$heartIcon.data('liked', true);
@@ -307,11 +282,9 @@ module.exports = function(user_data){
 		}
 		return $heartIcon;
 	}
-
-	var TweetComponents = {};
 	
 	// interface functions for assembling header and footer
-	TweetComponents.makeHeader = function (user) {
+	function makeHeader (user) {
 		var $header = $('<header>');
 		var imgAttributes = {
 			src: user.avatars.small,
@@ -323,7 +296,7 @@ module.exports = function(user_data){
 									.append($('<p>').text(user.handle));
 	};
 
-	TweetComponents.makeFooter = function (tweet){
+	function makeFooter (tweet){
 		var numberOfLikes = tweet.likes.length;
 		var $details = $('<p>').html(makeTimeStamp(tweet.created_at) + ' Likes: ');
 				$details.append($('<span>').text(numberOfLikes));
@@ -339,7 +312,7 @@ module.exports = function(user_data){
 			};
 			var $iconElt = $('<i>').attr(iconAttributes);
 			if(icon === 'fa-heart'){
-				$iconsSection.append(makeHeartIcon($iconElt, tweet, user_data));
+				$iconsSection.append(makeHeartIcon($iconElt, tweet));
 				return;
 			}
 			$iconsSection.append($iconElt);
@@ -348,6 +321,16 @@ module.exports = function(user_data){
 		return $('<footer>').append($details)
 												.append($iconsSection);
 	};
-	return TweetComponents;
+
+	//build the tweet with the following:
+  TWEET_DATA.forEach(function(tweet){
+    var $tweet = $('<article>').addClass('tweet');
+    var $main = $('<main>').append($('<p>').text(tweet.content.text));
+    $tweet.append(makeHeader(tweet.user))
+          .append($main)
+          .append(makeFooter(tweet));
+   	 // prepend to show 'newest first'
+    	$('#tweets-container').prepend($tweet);
+  });
 }
 },{}]},{},[1]);

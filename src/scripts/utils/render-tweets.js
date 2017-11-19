@@ -1,6 +1,5 @@
-	
-module.exports = function(user_data){
-	
+module.exports = function(USER_DATA, TWEET_DATA){
+
 	function addPadding (num){
 		var str = num.toString();
 		while(str.length !== 2){
@@ -9,32 +8,27 @@ module.exports = function(user_data){
 		return str;
 	}
 
-	/**
-	 * Checks if the tweet is liked by the currently logged in user.
-	 */
+	// Checks if the tweet is liked by the currently logged in user.
 	function likedByUser(tweet){
 		var liked = false;
 		tweet.likes.forEach(function(liker){
-			if(liker === user_data.handle){
+			if(liker === USER_DATA.handle){
 				liked = true;
 			}
 		});
 		return liked;
 	}
 
-	/**
-	 * Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
-	 * @param  {object} $icon The jQuery object representing the icon we're changing.
-	*/
+	// Handles click event for the 'heart icon'. Makes an ajax call to update the number of likes than updates the html accordingly.
 	function iconClickHandler($heartIcon, tweet){
 		return function(event){
 			event.stopPropagation();
 			// error handling
-			if(!user_data){
+			if(!USER_DATA){
 				$heartIcon.closest('footer').find('p').addClass('red-text').text('You must be loggedIn to like tweets.');
 				return;
 			}
-			if(user_data.handle === tweet.user.handle){
+			if(USER_DATA.handle === tweet.user.handle){
 				$heartIcon.closest('footer').find('p').addClass('red-text').text('You can\'t like your own tweets');
 				return;
 			}
@@ -63,9 +57,7 @@ module.exports = function(user_data){
 		};
 	}
 
-	/**
-	 * Creates a time stamp based on how much time has passed since the last tweet.
-	 */
+	// Creates a time stamp based on how much time has passed since the last tweet.
 	function makeTimeStamp (timeTweetCreated){
 		var timeTweetCreatedDate = new Date(timeTweetCreated);
 		var currentDate = Date.now();
@@ -83,14 +75,11 @@ module.exports = function(user_data){
 	}
 
 
-	/**
-	 * A factory function for the heart icon.
-	 * 
-	 */
+	// A factory function for the heart icon.
 	function makeHeartIcon($heartIcon, tweet){
 		$heartIcon.click(iconClickHandler($heartIcon, tweet));
 		// if the tweet has been liked before, the heart will appear red on login.
-		if(user_data){
+		if(USER_DATA){
 			if(likedByUser(tweet)){
 				$heartIcon.toggleClass('red-text');
 				$heartIcon.data('liked', true);
@@ -98,11 +87,9 @@ module.exports = function(user_data){
 		}
 		return $heartIcon;
 	}
-
-	var TweetComponents = {};
 	
 	// interface functions for assembling header and footer
-	TweetComponents.makeHeader = function (user) {
+	function makeHeader (user) {
 		var $header = $('<header>');
 		var imgAttributes = {
 			src: user.avatars.small,
@@ -114,7 +101,7 @@ module.exports = function(user_data){
 									.append($('<p>').text(user.handle));
 	};
 
-	TweetComponents.makeFooter = function (tweet){
+	function makeFooter (tweet){
 		var numberOfLikes = tweet.likes.length;
 		var $details = $('<p>').html(makeTimeStamp(tweet.created_at) + ' Likes: ');
 				$details.append($('<span>').text(numberOfLikes));
@@ -130,7 +117,7 @@ module.exports = function(user_data){
 			};
 			var $iconElt = $('<i>').attr(iconAttributes);
 			if(icon === 'fa-heart'){
-				$iconsSection.append(makeHeartIcon($iconElt, tweet, user_data));
+				$iconsSection.append(makeHeartIcon($iconElt, tweet));
 				return;
 			}
 			$iconsSection.append($iconElt);
@@ -139,5 +126,15 @@ module.exports = function(user_data){
 		return $('<footer>').append($details)
 												.append($iconsSection);
 	};
-	return TweetComponents;
+
+	//build the tweet with the following:
+  TWEET_DATA.forEach(function(tweet){
+    var $tweet = $('<article>').addClass('tweet');
+    var $main = $('<main>').append($('<p>').text(tweet.content.text));
+    $tweet.append(makeHeader(tweet.user))
+          .append($main)
+          .append(makeFooter(tweet));
+   	 // prepend to show 'newest first'
+    	$('#tweets-container').prepend($tweet);
+  });
 }
