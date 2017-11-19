@@ -33,11 +33,24 @@ function renderTweets(tweets, TweetComponents){
   });
 }
 
-/**
- * Provides an error message if the form is invalid. Else submits the form via AJAX and loads up the new tweets.
- *
- */
-function formSubmissionHandler(event){
+/**Load up tweets with AJAX.*/
+function initializeApp(appTasks){
+  $.getJSON('/tweets', function(data) {
+    var tweetData = data.tweets;
+    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
+    // set the time of last loast to now
+    timeOfLastLoad = Date.now();
+
+    // only render new tweets.
+    if(newTweetsOnly.length){
+      appTasks(data.user, newTweetsOnly);
+      return;
+    }
+    appTasks(data.user, tweetData);
+  });
+}
+
+function tweetFormSubmission(event){
   event.preventDefault();
   var $tweetComposer = $('.new-tweet form textarea');
   var tweet = $tweetComposer.val();
@@ -74,39 +87,55 @@ function formSubmissionHandler(event){
   });
 }
 
-/**Load up tweets with AJAX.*/
-function initializeApp(appTasks){
-  $.getJSON('/tweets', function(data) {
-    var tweetData = data.tweets;
-    var newTweetsOnly = tweetData.filter((tweet) => tweet.created_at > timeOfLastLoad);
-    // set the time of last loast to now
-    timeOfLastLoad = Date.now();
-
-    // only render new tweets.
-    if(newTweetsOnly.length){
-      appTasks(data.user, newTweetsOnly);
-      return;
-    }
-    appTasks(data.user, tweetData);
-  });
-}
-
-
 
 /** Initialization */
 $(function(){
+
+  function initializeFormHandlerOn(formId){
+  formId.submit(function(event){
+    event.preventDefault();
+    var $form = $(formId);
+    var inputs = $form.find('input');
+    var body = "";
+    for(var i = 0; i < inputs.length; i++){
+      if(i === 0){
+        body += $(inputs[i]).attr('name') + "=" + $(inputs[i]).val();
+        continue;
+      }
+      body += '&' + $(inputs[i]).attr('name') + '=' + $(inputs[i]).val();
+    }
+    console.log(body);
+    $.post($(this).attr('action'), encodeURI(body), function(result){
+      if(result === 'OK'){
+        location.reload(true);
+        return;
+      } 
+      // delete existing warning label
+      $form.find('label.red-text').remove();
+      var errorMessage = $('<label>').addClass('red-text').text(result);
+      $form.find('p').before(errorMessage);
+    });
+  })
+}
   initializeApp(function(USER_DATA, TWEET_DATA){
+
     var TweetComponents = require('./utils/tweet-components')(USER_DATA);
     
     var $composerTextArea = $('#composer');
     var $tweetForm = $('.new-tweet form');
     var $logInForm = $('#loginForm');
+    var $registerForm = $('#register');
+
     // buttons
     var $composerButton = $('#composeButton');
     var $logInButton = $('#loginButton');
     var $logOutButton = $('#logoutButton');
     var $registerLink = $('a.register-link');
     var $loginLink = $('a.login-link');
+
+    initializeFormHandlerOn($logInForm);
+    initializeFormHandlerOn($registerForm);
+
 
     renderTweets(TWEET_DATA, TweetComponents);
 
@@ -117,7 +146,7 @@ $(function(){
     }
     
     // Form submission events
-    $tweetForm.submit(formSubmissionHandler);
+    $tweetForm.submit(tweetFormSubmission);
     
     // button events
     $composerButton.click(function(){

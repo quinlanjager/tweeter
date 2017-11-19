@@ -98,7 +98,7 @@ body {
     bottom: 0;
     left: 0;
     width: 500px;
-    height: 300px;
+    height: 320px;
     overflow: hidden;
     border-radius: 6px; }
     #nav-bar .nav-login form {
@@ -134,8 +134,12 @@ body {
         position: relative;
         top: 40px; }
     #nav-bar .nav-login {
-      width: 1000px;
-      height: 400px; } }
+      width: 1200px;
+      height: 600px; }
+      #nav-bar .nav-login form {
+        top: 60px; }
+        #nav-bar .nav-login form#register {
+          top: 50px; } }
 
 @media (min-width: 5607px) {
   #nav-bar {
@@ -157,12 +161,7 @@ body {
       width: 2400px;
       height: 900px; }
       #nav-bar .nav-login form {
-        background-color: #00a087;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 120px;
-        text-align: center; }
+        top: 120px; }
         #nav-bar .nav-login form#register {
           top: 110px; } }
 

@@ -82,8 +82,8 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 						console.log(err);
 						return;
 					}
-					req.session.user_id = id;
-					res.redirect('/');
+				req.session.user_id = user.id;
+				res.status(200).send('OK');
 				});
 			});
 		});
@@ -99,7 +99,7 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 				return;
 			}
 			if(!user){
-				res.send('Your handle or password could not be found');
+				res.send('Your handle or password could not be found.');
 				return;
 			}
 			bcrypt.compare(password, user.password, (err, result) => {
@@ -107,13 +107,13 @@ MongoClient.connect(MONGODB_URI, (err, db) => {
 					console.log(err);
 					return;
 				}
-				if(result){
-					req.session.user_id = user.id;
-					res.redirect('/');
+				if(!result){
+					res.send('Your handle or password could not be found');
 					return;
 				}
-				// add more appropriate error message
-				res.send('Your handle or password could not be found');
+				
+				req.session.user_id = user.id;
+				res.status(200).send('OK');
 			});
 		});
 	});

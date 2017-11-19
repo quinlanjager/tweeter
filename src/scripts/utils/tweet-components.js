@@ -31,11 +31,11 @@ module.exports = function(user_data){
 			event.stopPropagation();
 			// error handling
 			if(!user_data){
-				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You must be loggedIn to like tweets.');
+				$heartIcon.closest('footer').find('p').addClass('red-text').text('You must be loggedIn to like tweets.');
 				return;
 			}
 			if(user_data.handle === tweet.user.handle){
-				$heartIcon.closest('footer').find('p').append('<span>').addClass('red-text').text('You can\'t like your own tweets');
+				$heartIcon.closest('footer').find('p').addClass('red-text').text('You can\'t like your own tweets');
 				return;
 			}
 
