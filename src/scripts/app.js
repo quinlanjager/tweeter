@@ -118,6 +118,7 @@ $(function(){
     
     // Form submission events
     $tweetForm.submit(formSubmissionHandler);
+    
     // button events
     $composerButton.click(function(){
       $('.new-tweet').slideToggle();

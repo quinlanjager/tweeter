@@ -100,6 +100,7 @@ module.exports = function(user_data){
 	}
 
 	var TweetComponents = {};
+	
 	// interface functions for assembling header and footer
 	TweetComponents.makeHeader = function (user) {
 		var $header = $('<header>');
